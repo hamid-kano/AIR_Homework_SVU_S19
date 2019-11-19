@@ -19,6 +19,8 @@ namespace AIR_SVU_S19
 
         public System.Data.Entity.DbSet<AIR_SVU_S19.Models.Files> Files { get; set; }
 
+        public System.Data.Entity.DbSet<AIR_SVU_S19.Models.Term_Document> Term_Document { get; set; }
+
         // Add a DbSet for each entity type that you want to include in your model. For more information 
         // on configuring and using a Code First model, see http://go.microsoft.com/fwlink/?LinkId=390109.
 

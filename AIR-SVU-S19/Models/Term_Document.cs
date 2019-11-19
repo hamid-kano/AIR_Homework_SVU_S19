@@ -10,6 +10,8 @@ namespace AIR_SVU_S19.Models
     {
         [Key]
         public int ID { get; set; }
+        public string Terms { get; set; }
+        public string Docs { get; set; }
 
     }
 }

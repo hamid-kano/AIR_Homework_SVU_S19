@@ -137,6 +137,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Term_DocumentController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -164,6 +165,10 @@
     <Compile Include="Migrations\201911181824547_upd.cs" />
     <Compile Include="Migrations\201911181824547_upd.designer.cs">
       <DependentUpon>201911181824547_upd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911191948477_term_doc.cs" />
+    <Compile Include="Migrations\201911191948477_term_doc.designer.cs">
+      <DependentUpon>201911191948477_term_doc.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Files.cs" />
@@ -273,6 +278,11 @@
     <Content Include="Views\Files\Details.cshtml" />
     <Content Include="Views\Files\Edit.cshtml" />
     <Content Include="Views\Files\Index.cshtml" />
+    <Content Include="Views\Term_Document\Create.cshtml" />
+    <Content Include="Views\Term_Document\Delete.cshtml" />
+    <Content Include="Views\Term_Document\Details.cshtml" />
+    <Content Include="Views\Term_Document\Edit.cshtml" />
+    <Content Include="Views\Term_Document\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -310,6 +320,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911181824547_upd.resx">
       <DependentUpon>201911181824547_upd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911191948477_term_doc.resx">
+      <DependentUpon>201911191948477_term_doc.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
