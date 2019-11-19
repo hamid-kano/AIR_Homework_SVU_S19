@@ -1,6 +1,7 @@
 ﻿using AIR_SVU_S19.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -48,7 +49,6 @@ namespace AIR_SVU_S19.Controllers
                 _file.File_content =null;
                 db.Files.Add(_file);
                 db.SaveChanges();
-
             }
             return Json("Uploaded " + Request.Files.Count + " files");
         }
@@ -68,16 +68,15 @@ namespace AIR_SVU_S19.Controllers
                     object path =file.File_Name;// @"C:\Users\حميد عبيد\source\repos\AIR-SVU-S19\AIR-SVU-S19\Files\1.doc";// file;
                     doc = app.Documents.Open(ref path, ref missing, ref readOnly, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
                     string text = doc.Content.Text;
-                    Files _file = new Files();  //db.Files.Find(file.File_ID);//  .Where(u => u.File_Name.Equals(file)).SingleOrDefault();
+                    Files _file =db.Files.Find(file.File_ID);  //db.Files.Find(file.File_ID);//  .Where(u => u.File_Name.Equals(file)).SingleOrDefault();
                     _file.File_Name = doc.Name;// file.File_Name;
                     _file.File_content = text;
-                    db.Files.Add(_file);
+                    db.Entry(_file).State = EntityState.Modified;
                     db.SaveChanges();
                     doc.Close();
                 }
             }
             return RedirectToAction("Index");
         }
-
     }
 }
