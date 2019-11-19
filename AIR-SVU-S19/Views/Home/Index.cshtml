@@ -1,0 +1,208 @@
+﻿@model AIR_SVU_S19.Models.Files
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <title>AIR Homework SVU-S19 | Yazan - Hamid - Tareq</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="AIR Homework SVU-S19 | Yazan - Hamid - Tareq">
+    <meta name="keywords" content="industry, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link href="~/img/favicon.ico" rel="shortcut icon" />
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/magnific-popup.css" />
+    <link rel="stylesheet" href="css/slicknav.min.css" />
+    <link rel="stylesheet" href="css/owl.carousel.min.css" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/css/magnific-popup.css" rel="stylesheet" />
+    <link href="~/css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="~/css/slicknav.min.css" rel="stylesheet" />
+    <!-- Main Stylesheets -->
+    <link href="~/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+    <!-- Header section  -->
+    <header class="header-section clearfix">
+        <div class="header-top">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                    <div class="col-md-6 text-md-right">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="site-navbar">
+            <!-- Logo -->
+            <a href="index.html" class="site-logo">
+                <img src="~/img/logo.png" alt="" />
+            </a>
+            <div class="header-right">
+                <div class="header-info-box">
+                    <div class="hib-icon">
+                        <img src="~/img/icons/phone.png" alt="" class="" />
+                    </div>
+                    <div class="hib-text">
+                        <h6>+546 990221 123</h6>
+                        <p>contact@industryalinc.com</p>
+                    </div>
+                </div>
+                <div class="header-info-box">
+                    <div class="hib-icon">
+                        <img src="~/img/icons/map-marker.png" />
+                    </div>
+                    <div class="hib-text">
+                        <h6>Main Str, no 23</h6>
+                        <p>NY, New York PK 23589</p>
+                    </div>
+                </div>
+                <button class="search-switch"><i class="fa fa-search"></i></button>
+            </div>
+            <!-- Menu -->
+            <nav class="site-nav-menu">
+                <ul>
+                    <li class="active"><a href="index.cshtml">Home</a></li>
+                    <li><a href="about.html">About us</a></li>
+                    <li>
+                        <a href="solutions.html">Solutions</a>
+                        <ul class="sub-menu">
+                            <li><a href="elements.html">Elements</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+
+        </div>
+        <div style="background:#2196f3; height:6px">
+        </div>
+
+    </header>
+    <!-- Header section end  -->
+    <div style="background:#ffffff;padding-top:100px;height:1000px">
+
+        <div class="row">
+            <div class="container center-block">
+                <ul class="nav nav-tabs reserch-tab-menu " style="width:25%" role="tablist">
+                    <li class="nav-item text-center">
+                        <a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Oil & Lubricants</a>
+                    </li>
+                    <li class="nav-item text-center">
+                        <a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Engeneering</a>
+                    </li>
+                    <li class="nav-item text-center">
+                        <a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Green Energy</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        <div>
+            <form id="uploader">
+                <input id="fileInput" type="file" multiple>
+                <input type="submit" value="Upload file" />
+            </form>
+
+            <hr />
+            @using (Html.BeginForm("Mainpulation_Text", "Home", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Create" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <!-- Call to action section  -->
+    <section class="cta-section ">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9 d-flex align-items-center">
+                    <h2>We produce or supply Goods, Services, or Sources</h2>
+                </div>
+                <div class="col-lg-3 text-lg-right">
+                    <a href="#" class="site-btn sb-dark">contact us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Call to action section end  -->
+    <!-- Search model -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search model end -->
+    <!--====== Javascripts & Jquery ======-->
+
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/circle-progress.min.js"></script>
+    <script src="~/js/jquery-3.2.1.min.js"></script>
+    <script src="~/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/js/jquery.slicknav.min.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script>
+        document.getElementById('uploader').onsubmit = function () {
+            var formdata = new FormData(); //FormData object
+            var fileInput = document.getElementById('fileInput');
+            //Iterating through each files selected in fileInput
+            for (i = 0; i < fileInput.files.length; i++) {
+                //Appending each file to FormData object
+                formdata.append(fileInput.files[i].name, fileInput.files[i]);
+            }
+            //Creating an XMLHttpRequest and sending
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Home/Upload');
+            xhr.send(formdata);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert(xhr.responseText);
+                }
+            }
+            return false;
+        }
+    </script>
+
+    <script>
+        document.getElementById('indexing').onsubmit = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Home/Mainpulation_Text');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert(xhr.responseText);
+                }
+            }
+            return false;
+        }
+    </script>
+
+</body>
+
+</html>
