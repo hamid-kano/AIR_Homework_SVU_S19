@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIR_SVU_S19", "AIR-SVU-S19\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{36DFC202-32B1-453F-B961-06A61219602E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooleanRetrievalModel", "..\..\..\Downloads\BooleanRetrievalModel\BooleanRetrievalModel.csproj", "{1AADD959-DE34-4A09-99B4-8E1A560C4AC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooleanRetrievalModel", "..\..\..\..\Downloads\BooleanRetrievalModel\BooleanRetrievalModel.csproj", "{1AADD959-DE34-4A09-99B4-8E1A560C4AC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

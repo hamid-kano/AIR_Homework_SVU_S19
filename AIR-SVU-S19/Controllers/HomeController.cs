@@ -27,7 +27,7 @@ namespace AIR_SVU_S19.Controllers
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult Relevant_Docs()
         {
             ViewBag.Message = "Your contact page.";
 
@@ -111,9 +111,13 @@ namespace AIR_SVU_S19.Controllers
                                 newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
                               if (newTerm != null)
                                 {
-                                    newTerm.Docs= file.File_Name + " ";
+                                    var listDocs = newTerm.Docs.Split(' ');
+                                    if (!listDocs.Contains(file.File_Name))
+                                    {
+                                    newTerm.Docs += file.File_Name + " ";
                                     db.Entry(newTerm).State = EntityState.Modified;
                                     db.SaveChanges();
+                                    }
                                 }
 
                             }
@@ -143,9 +147,13 @@ namespace AIR_SVU_S19.Controllers
                                 newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
                                 if (newTerm != null)
                                 {
-                                    newTerm.Docs = file.File_Name + " ";
-                                    db.Entry(newTerm).State = EntityState.Modified;
-                                    db.SaveChanges();
+                                    var listDocs = newTerm.Docs.Split(' ');
+                                    if (!listDocs.Contains(file.File_Name))
+                                    {
+                                        newTerm.Docs += file.File_Name + " ";
+                                        db.Entry(newTerm).State = EntityState.Modified;
+                                        db.SaveChanges();
+                                    }
                                 }
 
                             }
@@ -159,7 +167,14 @@ namespace AIR_SVU_S19.Controllers
             }
             return RedirectToAction("Index");
         }
-
+        [HttpGet]
+        public JsonResult List_Files_Relevant()
+        {
+            //Creating List
+            List<Files> ObjEmp = db.Files.ToList();
+                  
+            return Json(ObjEmp, JsonRequestBehavior.AllowGet);
+        }
         public string ReturnCleanASCII(string s)
         {
             StringBuilder sb = new StringBuilder(s.Length);

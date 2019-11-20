@@ -283,6 +283,7 @@
     <Content Include="Views\Term_Document\Details.cshtml" />
     <Content Include="Views\Term_Document\Edit.cshtml" />
     <Content Include="Views\Term_Document\Index.cshtml" />
+    <Content Include="Views\Home\Relevant_Docs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
