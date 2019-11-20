@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Word = Microsoft.Office.Interop.Word;
@@ -63,28 +64,115 @@ namespace AIR_SVU_S19.Controllers
             string langSelect= values["Lang"];
             string AlgorithmSelect = values["Algorithm"];
 
-            //Word.Application app = new Word.Application();
-            // Word.Document doc;
-            //object missing = Type.Missing;
-            //object readOnly = true;
-            //IList<Files> Files_List = db.Files.ToList();
-            //foreach (var file in Files_List)
-            //{
-            //    if (file.File_content==null)
-            //    {
-            //        object path =file.File_Name;// @"C:\Users\حميد عبيد\source\repos\AIR-SVU-S19\AIR-SVU-S19\Files\1.doc";// file;
-            //        doc = app.Documents.Open(ref path, ref missing, ref readOnly, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
-            //        string text = doc.Content.Text;
-            //        Files _file =db.Files.Find(file.File_ID);  //db.Files.Find(file.File_ID);//  .Where(u => u.File_Name.Equals(file)).SingleOrDefault();
-            //        _file.File_Name = doc.Name;// file.File_Name;
-            //        _file.File_content = text;
-            //        db.Entry(_file).State = EntityState.Modified;
-            //        db.SaveChanges();
-            //        doc.Close();
-            //    }
-            //}
-            // return RedirectToAction("Index");
-            return Content("<script language='javascript' type='text/javascript'>alert('Hello world!"+ langSelect +"--"+ AlgorithmSelect + "');</script>");
-        } 
+            Word.Application app = new Word.Application();
+            Word.Document doc;
+            object missing = Type.Missing;
+            object readOnly = true;
+            string poureText;
+            IList<Files> Files_List = db.Files.ToList();
+            foreach (var file in Files_List)
+            {
+                if (file.File_content == null)
+                {
+                    object path = file.File_Name;// @"C:\Users\حميد عبيد\source\repos\AIR-SVU-S19\AIR-SVU-S19\Files\1.doc";// file;
+                    doc = app.Documents.Open(ref path, ref missing, ref readOnly, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
+                    string text = doc.Content.Text;
+                    Files _file = db.Files.Find(file.File_ID);  //db.Files.Find(file.File_ID);//  .Where(u => u.File_Name.Equals(file)).SingleOrDefault();
+                    _file.File_Name = doc.Name;// file.File_Name;
+                    _file.File_content = text;
+                    db.Entry(_file).State = EntityState.Modified;
+                    db.SaveChanges();
+                    doc.Close();
+                    poureText = Stopword_Arabic.RemoveStopwords(text);
+                    poureText = Stopword_English.RemoveStopwords(poureText);
+                    poureText = ReturnCleanASCII(poureText);
+                    string wordStemm;
+                    HashSet<string> hashSet = new HashSet<string>((from a in db.Term_Document select a.Terms).Distinct());
+                    int countTerm = hashSet.Count;
+                    if (langSelect== "arabic")
+                    {
+                        ISRI_Stemmer_Arabic stemmerArabic = new ISRI_Stemmer_Arabic();
+                        foreach (var item in poureText.Split(' '))
+                        {
+                            Term_Document newTerm = new Term_Document();
+                            wordStemm = stemmerArabic.Stemming(item);
+                            if (wordStemm.Length>2)
+                            hashSet.Add(wordStemm);
+                            if (countTerm<hashSet.Count)
+                            {
+                                countTerm++;
+                                newTerm.Terms = wordStemm;
+                                newTerm.Docs = file.File_Name + " ";
+                                db.Term_Document.Add(newTerm);
+                                db.SaveChanges();
+                            }
+                            else
+                            {
+                                newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
+                              if (newTerm != null)
+                                {
+                                    newTerm.Docs= file.File_Name + " ";
+                                    db.Entry(newTerm).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                }
+
+                            }
+
+                        }
+
+                    }
+                    else
+                    {
+                        Porter_Stemmer_English stemmerEnglish = new Porter_Stemmer_English();
+                        foreach (var item in poureText.Split(' '))
+                        {
+                            Term_Document newTerm = new Term_Document();
+                            wordStemm = stemmerEnglish.stem(item);
+                            if (wordStemm.Length > 2)
+                                hashSet.Add(wordStemm);
+                            if (countTerm < hashSet.Count)
+                            {
+                                countTerm++;
+                                newTerm.Terms = wordStemm;
+                                newTerm.Docs = file.File_Name + " ";
+                                db.Term_Document.Add(newTerm);
+                                db.SaveChanges();
+                            }
+                            else
+                            {
+                                newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
+                                if (newTerm != null)
+                                {
+                                    newTerm.Docs = file.File_Name + " ";
+                                    db.Entry(newTerm).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                }
+
+                            }
+
+                        }
+
+
+                    }
+
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        public string ReturnCleanASCII(string s)
+        {
+            StringBuilder sb = new StringBuilder(s.Length);
+           foreach (char c in s)
+            {
+                if (c == 'ـ')
+                continue;
+                if (Char.IsLetterOrDigit(c))
+                sb.Append(c);
+                else
+                sb.Append(' ');
+            }
+            return sb.ToString();
+        }
     }
 }

@@ -258,3 +258,4 @@ C:\Users\حميد عبيد\Documents\GitHub\AIR_Homework_SVU_S19\AIR-SVU-S19\obj
 C:\Users\حميد عبيد\Documents\GitHub\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR-SVU-S19.dll
 C:\Users\حميد عبيد\Documents\GitHub\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR-SVU-S19.pdb
 C:\Users\حميد عبيد\Documents\GitHub\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR_SVU_S19.Migrations.term_doc.resources
+C:\Users\Abo Reda\Source\Repos\hamid-kano\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR_SVU_S19.Migrations.term_doc.resources
