@@ -25,7 +25,8 @@ namespace ConsoleApp1
             // ////string lineOfText = "";
             // ////// Create a file to write to.
             // ////string createText = "";
-            // ////string readText = File.ReadAllText(@"D:\list.txt");
+           // string readText = File.ReadAllText(@"D:\list.txt");
+            StreamReader file =new StreamReader(@"D:\list.txt");
             // string replacement = Regex.Replace(input, @"\t|\n|\r", " ");
             // //foreach (var term in lines)
             // //{              
@@ -33,21 +34,42 @@ namespace ConsoleApp1
             // //    outPut_text += "{"+'"'+ term +'"'+", true},"+ Environment.NewLine;
             // //}
             // File.WriteAllText(@"D:\replacement.txt", replacement);
-            TextReader ss = new StringReader("computer");
-            //TextReader ss  = new StreamReader(@"D:\replacement.txt");
-            Porter_Stemmer_English por = new Porter_Stemmer_English();
-            string  input= Console.ReadLine();
-            Porter2 po = new Porter2();
+            //TextReader ss = new StringReader("computer");
+            ////TextReader ss  = new StreamReader(@"D:\replacement.txt");
+            //Porter_Stemmer_English por = new Porter_Stemmer_English();
+            //string  input= Console.ReadLine();
+            //Porter2 po = new Porter2();
 
-            while (input != "0")
-            {
-                Console.WriteLine(po.stem(input));
-                input= Console.ReadLine();
+            //while (input != "0")
+            //{
+            //    Console.WriteLine(po.stem(input));
+            //    input= Console.ReadLine();
+            //}
+            string outputTXT="";
+            string line;
+            int i;
+            Dictionary<string, bool> _stops = new Dictionary<string, bool>();
+               while ((line = file.ReadLine()) != null)
+                    {
+                try
+                {
+                     _stops.Add(line, true);
+                }
+                catch (Exception)
+                {
+                    //  throw;
+                    Console.WriteLine("----- " + line + " -------");
+                }
+  
+               }
+
+            foreach (var pair in _stops)
+                    {
+                      outputTXT += "{" + pair.Key + "," + pair.Value + "}," + Environment.NewLine;
+                // Console.WriteLine("FOREACH KEYVALUEPAIR: {0}, {1}", pair.Key, pair.Value);
             }
 
-
-
-
+            File.WriteAllText(@"D:\replacement.txt", outputTXT);
             //  Console.WriteLine(ss.ReadToEnd().ToString());
             Console.ReadLine();
 

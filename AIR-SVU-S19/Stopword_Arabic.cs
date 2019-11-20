@@ -673,7 +673,6 @@ namespace AIR_SVU_S19
             {"يوليو", true},
             {"يوم", true},
             {"يونيو", true},
-            {"أيّان", true}
         };
 
         /// <summary>
