@@ -167,14 +167,6 @@ namespace AIR_SVU_S19.Controllers
             }
             return RedirectToAction("Index");
         }
-        [HttpGet]
-        public JsonResult List_Files_Relevant()
-        {
-            //Creating List
-            List<Files> ObjEmp = db.Files.ToList();
-                  
-            return Json(ObjEmp, JsonRequestBehavior.AllowGet);
-        }
         public string ReturnCleanASCII(string s)
         {
             StringBuilder sb = new StringBuilder(s.Length);
@@ -189,5 +181,28 @@ namespace AIR_SVU_S19.Controllers
             }
             return sb.ToString();
         }
+        public JsonResult GetSearchingData(string SearchBy, string SearchValue)
+        {
+            List<Files> StuList = new List<Files>();
+            if (SearchBy == "ID")
+            {
+                try
+                {
+                    int Id = Convert.ToInt32(SearchValue);
+                    StuList = db.Files.Where(x => x.File_ID == Id || SearchValue == null).ToList();
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("{0} Is Not A ID ", SearchValue);
+                }
+                return Json(StuList, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                StuList = db.Files.Where(x => x.File_Name.StartsWith(SearchValue) || SearchValue == null).ToList();
+                return Json(StuList, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

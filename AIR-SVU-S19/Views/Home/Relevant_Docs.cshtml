@@ -50,7 +50,7 @@
 
         <div class="site-navbar">
             <!-- Logo -->
-            <a href="index.html" class="site-logo">
+            <a href="index" class="site-logo">
                 <img src="~/img/logo.png" alt="" />
             </a>
             <div class="header-right">
@@ -77,7 +77,7 @@
             <!-- Menu -->
             <nav class="site-nav-menu">
                 <ul>
-                    <li class="active"><a href="index.cshtml">Home</a></li>
+                    <li class="active"><a href="index">Home</a></li>
                     <li><a href="about.html">About us</a></li>
                     <li>
                         <a href="solutions.html">Solutions</a>
@@ -93,73 +93,93 @@
         </div>
         <div style="background:#2196f3; height:6px">
         </div>
-
     </header>
     <!-- Header section end  -->
     @*class="row justify-content-center"  for center content *@
-<div style="background:#ffffff;padding-top:100px;height:1000px">
-    @*<div>
-            @Html.Label("StudentName", "Key Search :", new { @class = "form-control" })
-            @Html.TextBox("myTextBox", "This is value", new { @class = "form-control" })
-        </div>*@
-    <div class="form-horizontal">
-        <div class="form-group">
-            <div class="container justify-content-center row">
-                <div class="col-md-auto">
-                    @Html.Label("StudentName", "Key Search :", htmlAttributes: new { @class = "control-label" })
+    <div style="background:#ffffff;padding-top:100px;margin-bottom:300px; height:1000px">
+        @*<div>
+                @Html.Label("StudentName", "Key Search :", new { @class = "form-control" })
+                @Html.TextBox("myTextBox", "This is value", new { @class = "form-control" })
+            </div>*@
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="container justify-content-center row">
+                    <div class="col-md-auto">
+                        <label style="font-family:Al-Jazeera-Arabic;font-size:large" class="col-form-label-sm">Key Search :</label>    @*@Html.Label("lbl_Search_Key", "Key Search :", htmlAttributes: new { @class = "control-label" })*@
+                    </div>
+                    <div class="col-md-3 ">
+                        @Html.Editor("TxT_Search_Key", "This is value", new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-3 ">
+                        @Html.DropDownList("AlgorithmRetrieve", new SelectList(
+                            new List<SelectListItem>
+                            {
+                                new SelectListItem {Text = "Boolean Model", Value = "boolean"},
+                                new SelectListItem {Text = "Extend Boolean Model", Value = "ex_boolean"},
+                                 new SelectListItem {Text = "Vector Space model", Value = "vector_space"},
+                            }, "Value", "Text"), new { @class = "form-control" })
+                    </div>
                 </div>
-                <div class="col-md-3 ">
-                    @Html.Editor("myTextBox", "This is value", new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-                <div class="col-md-3 ">
-                    @Html.DropDownList("AlgorithmRetrieve", new SelectList(
-                        new List<SelectListItem>
-                        {
-                            new SelectListItem {Text = "Boolean Model", Value = "boolean"},
-                            new SelectListItem {Text = "Extend Boolean Model", Value = "ex_boolean"},
-                             new SelectListItem {Text = "Vector Space model", Value = "vector_space"},
-                        }, "Value", "Text"), new { @class = "form-control" })
+                <br />
+                <div class="container" style="width:15%">
+                    <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="بحث" class="btn btn-success form-control " />
                 </div>
             </div>
-            <br />
-            <div class="container" style="width:15%">
-                <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="بحث" class="btn btn-success form-control " />
-            </div>
-            </div>
-    </div>
-    <br />
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <script>
-        $(document).ready(function () {
-             
-            //Call EmpDetails jsonResult Method
-            $.getJSON("Home/List_Files_Relevant",
-                function (json) {
-                    var tr;
-                    //Append each row to html table
-                    for (var i = 0; i < json.length; i++) {
-                        tr = $('<tr/>');
-                        tr.append("<td>" + json[i].File_ID + "</td>");
-                        tr.append("<td>" + json[i].File_Name + "</td>");
-                        $('table').append(tr);
-                    } 
+        </div>
+        <br />
+        <br />
+        <div class="container">
+            <b>Search By : </b>
+            <select id="SearchBy">
+                <option value="Name">Name</option>
+                <option value="ID">ID</option>
+            </select><br /><br />
+            @Html.TextBox("Search")<input type="submit" id="SearchBtn" value="Search" /><br /><br />
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody id="DataSearching">
+                </tbody>
+            </table>
+        </div>
+        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("#SearchBtn").click(function () {
+                    var SearchBy = $("#SearchBy").val();
+                    var SearchValue = $("#Search").val();
+                    var SetData = $("#DataSearching");
+                    SetData.html("");
+                    $.ajax({
+                        type: "post",
+                        url: "/Home/GetSearchingData?SearchBy=" + SearchBy + "&SearchValue=" + SearchValue,
+                        contentType: "html",
+                        success: function (result) {
+                            if (result.length == 0) {
+                                SetData.append('<tr style="color:red"><td colspan="3">No Match Data</td></tr>')
+                            }
+                            else {
+                                $.each(result, function (index, value) {
+                                    var Data = "<tr>" +
+                                        "<td>" + value.File_ID + "</td>" +
+                                        "<td>" + value.File_Name + "</td>" +
+                                        "</tr>";
+                                    SetData.append(Data);
+
+                                });
+                            }
+                        }
+                    });
                 });
-        });
-    </script>
-    <div class="row container justify-content-center ">
-        <table style="width:50%" class="table table-bordered table-condensed table-hover table-striped">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+            });
+        </script>
     </div>
-</div>
     <!-- Call to action section  -->
-    <section class="cta-section ">
+    <section class="cta-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 d-flex align-items-center">
@@ -183,13 +203,6 @@
     </div>
     <!-- Search model end -->
     <!--====== Javascripts & Jquery ======-->
-    <style>
-        /*input:hover, input:focus {
-                width: 125%
-            }*/
-
-    </style>
-
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/circle-progress.min.js"></script>
     <script src="~/js/jquery-3.2.1.min.js"></script>
