@@ -135,8 +135,10 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="BooleanQueryManipulationClass.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrderTerms_DocsBooleanController.cs" />
     <Compile Include="Controllers\Term_DocumentController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -170,8 +172,21 @@
     <Compile Include="Migrations\201911191948477_term_doc.designer.cs">
       <DependentUpon>201911191948477_term_doc.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911231027436_addOrederTerm.cs" />
+    <Compile Include="Migrations\201911231027436_addOrederTerm.designer.cs">
+      <DependentUpon>201911231027436_addOrederTerm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911231050023_dd.cs" />
+    <Compile Include="Migrations\201911231050023_dd.designer.cs">
+      <DependentUpon>201911231050023_dd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911231830230_boolean_doc_term.cs" />
+    <Compile Include="Migrations\201911231830230_boolean_doc_term.designer.cs">
+      <DependentUpon>201911231830230_boolean_doc_term.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Files.cs" />
+    <Compile Include="Models\OrderTerms_DocsBoolean.cs" />
     <Compile Include="Models\Term_Document.cs" />
     <Compile Include="Porter_Stemmer_English.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -285,6 +300,11 @@
     <Content Include="Views\Term_Document\Edit.cshtml" />
     <Content Include="Views\Term_Document\Index.cshtml" />
     <Content Include="Views\Home\Relevant_Docs.cshtml" />
+    <Content Include="Views\OrderTerms_DocsBoolean\Create.cshtml" />
+    <Content Include="Views\OrderTerms_DocsBoolean\Delete.cshtml" />
+    <Content Include="Views\OrderTerms_DocsBoolean\Details.cshtml" />
+    <Content Include="Views\OrderTerms_DocsBoolean\Edit.cshtml" />
+    <Content Include="Views\OrderTerms_DocsBoolean\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -325,6 +345,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911191948477_term_doc.resx">
       <DependentUpon>201911191948477_term_doc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911231027436_addOrederTerm.resx">
+      <DependentUpon>201911231027436_addOrederTerm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911231050023_dd.resx">
+      <DependentUpon>201911231050023_dd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911231830230_boolean_doc_term.resx">
+      <DependentUpon>201911231830230_boolean_doc_term.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

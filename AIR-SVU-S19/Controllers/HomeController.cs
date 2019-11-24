@@ -14,6 +14,9 @@ namespace AIR_SVU_S19.Controllers
     public class HomeController : Controller
     {
         AIR_SVU_S19_Model db = new AIR_SVU_S19_Model();
+        public static Dictionary<string, List<string>> documentCollection = new Dictionary<string, List<string>>();
+        public static Dictionary<string, List<int>> termDocumentIncidenceMatrix = new Dictionary<string, List<int>>();
+        public static HashSet<string> distinctTerm = new HashSet<string>();
 
         public ActionResult Index()
         {
@@ -53,7 +56,6 @@ namespace AIR_SVU_S19.Controllers
                 db.Files.Add(_file);
                 db.SaveChanges();
                 }
-
             }
             return Json("Uploaded " + Request.Files.Count + " files");
         }
@@ -61,19 +63,23 @@ namespace AIR_SVU_S19.Controllers
         [HttpPost]
         public ActionResult Mainpulation_Text(FormCollection values)
         {
-            string langSelect= values["Lang"];
+            #region enter_stemming_term_with_Docs
+            string langSelect = values["Lang"];
             string AlgorithmSelect = values["Algorithm"];
-
+            HashSet<string> hashSet = new HashSet<string>();
             Word.Application app = new Word.Application();
             Word.Document doc;
             object missing = Type.Missing;
             object readOnly = true;
             string poureText;
             IList<Files> Files_List = db.Files.ToList();
+            bool insertNewDoc = false;
             foreach (var file in Files_List)
             {
+               
                 if (file.File_content == null)
                 {
+                    insertNewDoc = true;
                     object path = file.File_Name;// @"C:\Users\حميد عبيد\source\repos\AIR-SVU-S19\AIR-SVU-S19\Files\1.doc";// file;
                     doc = app.Documents.Open(ref path, ref missing, ref readOnly, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
                     string text = doc.Content.Text;
@@ -87,7 +93,7 @@ namespace AIR_SVU_S19.Controllers
                     poureText = Stopword_English.RemoveStopwords(poureText);
                     poureText = ReturnCleanASCII(poureText);
                     string wordStemm;
-                    HashSet<string> hashSet = new HashSet<string>((from a in db.Term_Document select a.Terms).Distinct());
+                    hashSet = new HashSet<string>((from a in db.Term_Document select a.Terms).Distinct());
                     int countTerm = hashSet.Count;
                     if (langSelect== "arabic")
                     {
@@ -110,7 +116,7 @@ namespace AIR_SVU_S19.Controllers
                             {
                                 newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
                               if (newTerm != null)
-                                {
+                              {
                                     var listDocs = newTerm.Docs.Split(' ');
                                     if (!listDocs.Contains(file.File_Name))
                                     {
@@ -118,12 +124,9 @@ namespace AIR_SVU_S19.Controllers
                                     db.Entry(newTerm).State = EntityState.Modified;
                                     db.SaveChanges();
                                     }
-                                }
-
+                              }
                             }
-
                         }
-
                     }
                     else
                     {
@@ -155,15 +158,31 @@ namespace AIR_SVU_S19.Controllers
                                         db.SaveChanges();
                                     }
                                 }
-
                             }
-
                         }
-
-
                     }
-
                 }
+            }
+            #endregion enter_stemming_term_with_Docs
+            if (insertNewDoc)
+            {
+                foreach (var item in db.OrderTerms_DocsBoolean)
+                {
+                    db.OrderTerms_DocsBoolean.Remove(item);
+                }
+                db.SaveChanges();
+                documentCollection = new Dictionary<string, List<string>>();
+                List<string> listOfDocument = new List<string>();
+                listOfDocument = db.Files.Select(f => f.File_Name).ToList<string>();
+                foreach (var file in listOfDocument)
+                {
+                    List<string> listTermDoc = db.Term_Document.Where(d => d.Docs.Contains(file)).Select(t => t.Terms).ToList<string>();
+                    documentCollection.Add(file, listTermDoc);
+                }
+                distinctTerm = db.Term_Document.Select(x => x.Terms).Distinct().ToHashSet<string>();
+                termDocumentIncidenceMatrix = BooleanQueryManipulationClass.GetTermDocumentIncidenceMatrix(distinctTerm, documentCollection);
+                insert_Distinct_Term_Docs_To_DB(termDocumentIncidenceMatrix);
+
             }
             return RedirectToAction("Index");
         }
@@ -181,28 +200,55 @@ namespace AIR_SVU_S19.Controllers
             }
             return sb.ToString();
         }
-        public JsonResult GetSearchingData(string SearchBy, string SearchValue)
+        public JsonResult GetSearchingData(string SearchBy, string SearchValue ,string SearchModel)
         {
-            List<Files> StuList = new List<Files>();
-            if (SearchBy == "ID")
+            Porter_Stemmer_English porterStem = new Porter_Stemmer_English();
+            string stermWordQuery = porterStem.stem(SearchValue);
+            List<Files> filesList = new List<Files>();
+            if (SearchValue=="")
             {
-                try
-                {
-                    int Id = Convert.ToInt32(SearchValue);
-                    StuList = db.Files.Where(x => x.File_ID == Id || SearchValue == null).ToList();
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("{0} Is Not A ID ", SearchValue);
-                }
-                return Json(StuList, JsonRequestBehavior.AllowGet);
+                return Json(db.Files.ToList(), JsonRequestBehavior.AllowGet);
             }
             else
             {
-                StuList = db.Files.Where(x => x.File_Name.StartsWith(SearchValue) || SearchValue == null).ToList();
-                return Json(StuList, JsonRequestBehavior.AllowGet);
+                
+                var listFiles = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToUpper().Equals(stermWordQuery.ToUpper()) || t.Term.ToUpper().Equals(SearchValue.ToUpper())).FirstOrDefault();
+                if (listFiles!=null)
+                {
+                    int index = 0;
+                    foreach (var item in listFiles.Docs.Split(' '))
+                    {
+                        if (item == "1")
+                        {
+                            filesList.Add(db.Files.ToList()[index]);
+                        }
+                        index++;
+                    }
+                    return Json(filesList.ToList(), JsonRequestBehavior.AllowGet);
+                }
+                return null;
             }
+           // return null;
         }
+        public void insert_Distinct_Term_Docs_To_DB(Dictionary<string, List<int>> termDocumentIncidenceMatrix)
+        {
+            AIR_SVU_S19_Model db = new AIR_SVU_S19_Model();
+            string output = "";
+            foreach (var item in termDocumentIncidenceMatrix)
+            {
+                OrderTerms_DocsBoolean orederTerm = new OrderTerms_DocsBoolean();
+                orederTerm.Term = item.Key;
+                foreach (var value in item.Value)
+                {
+                    output += value+" ";
+                }
+                orederTerm.Docs= output;
+                db.OrderTerms_DocsBoolean.Add(orederTerm);
+                db.SaveChanges();
+                output = "";
+            }
+            //System.IO.File.WriteAllText(@"D:\hamid.txt", output);
 
+        }
     }
 }

@@ -21,6 +21,9 @@ namespace AIR_SVU_S19
 
         public System.Data.Entity.DbSet<AIR_SVU_S19.Models.Term_Document> Term_Document { get; set; }
 
+        object placeHolderVariable;
+        public System.Data.Entity.DbSet<AIR_SVU_S19.Models.OrderTerms_DocsBoolean> OrderTerms_DocsBoolean { get; set; }
+
         // Add a DbSet for each entity type that you want to include in your model. For more information 
         // on configuring and using a Code First model, see http://go.microsoft.com/fwlink/?LinkId=390109.
 

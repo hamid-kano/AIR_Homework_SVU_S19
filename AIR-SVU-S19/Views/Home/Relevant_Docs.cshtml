@@ -117,7 +117,7 @@
                                 new SelectListItem {Text = "Boolean Model", Value = "boolean"},
                                 new SelectListItem {Text = "Extend Boolean Model", Value = "ex_boolean"},
                                  new SelectListItem {Text = "Vector Space model", Value = "vector_space"},
-                            }, "Value", "Text"), new { @class = "form-control" })
+                            }, "Value", "Text"), new { @class = "form-control" ,@id="AlgorithmRetrieve"})
                     </div>
                 </div>
                 <br />
@@ -152,11 +152,12 @@
                 $("#SearchBtn").click(function () {
                     var SearchBy = $("#SearchBy").val();
                     var SearchValue = $("#Search").val();
+                    var SearchModel = $("#AlgorithmRetrieve").val();
                     var SetData = $("#DataSearching");
                     SetData.html("");
                     $.ajax({
                         type: "post",
-                        url: "/Home/GetSearchingData?SearchBy=" + SearchBy + "&SearchValue=" + SearchValue,
+                        url: "/Home/GetSearchingData?SearchBy=" + SearchBy + "&SearchValue=" + SearchValue + "&SearchModel="+ SearchModel,
                         contentType: "html",
                         success: function (result) {
                             if (result.length == 0) {
@@ -169,7 +170,6 @@
                                         "<td>" + value.File_Name + "</td>" +
                                         "</tr>";
                                     SetData.append(Data);
-
                                 });
                             }
                         }
