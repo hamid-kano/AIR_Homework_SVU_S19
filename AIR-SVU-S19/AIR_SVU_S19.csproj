@@ -184,6 +184,10 @@
     <Compile Include="Migrations\201911231830230_boolean_doc_term.designer.cs">
       <DependentUpon>201911231830230_boolean_doc_term.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911251259319_addf.cs" />
+    <Compile Include="Migrations\201911251259319_addf.designer.cs">
+      <DependentUpon>201911251259319_addf.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Files.cs" />
     <Compile Include="Models\OrderTerms_DocsBoolean.cs" />
@@ -192,6 +196,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stopword_Arabic.cs" />
     <Compile Include="Stopword_English.cs" />
+    <Compile Include="VectorSpaceModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -294,17 +299,17 @@
     <Content Include="Views\Files\Details.cshtml" />
     <Content Include="Views\Files\Edit.cshtml" />
     <Content Include="Views\Files\Index.cshtml" />
-    <Content Include="Views\Term_Document\Create.cshtml" />
-    <Content Include="Views\Term_Document\Delete.cshtml" />
-    <Content Include="Views\Term_Document\Details.cshtml" />
-    <Content Include="Views\Term_Document\Edit.cshtml" />
-    <Content Include="Views\Term_Document\Index.cshtml" />
     <Content Include="Views\Home\Relevant_Docs.cshtml" />
     <Content Include="Views\OrderTerms_DocsBoolean\Create.cshtml" />
     <Content Include="Views\OrderTerms_DocsBoolean\Delete.cshtml" />
     <Content Include="Views\OrderTerms_DocsBoolean\Details.cshtml" />
     <Content Include="Views\OrderTerms_DocsBoolean\Edit.cshtml" />
     <Content Include="Views\OrderTerms_DocsBoolean\Index.cshtml" />
+    <Content Include="Views\Term_Document\Create.cshtml" />
+    <Content Include="Views\Term_Document\Delete.cshtml" />
+    <Content Include="Views\Term_Document\Details.cshtml" />
+    <Content Include="Views\Term_Document\Edit.cshtml" />
+    <Content Include="Views\Term_Document\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -354,6 +359,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911231830230_boolean_doc_term.resx">
       <DependentUpon>201911231830230_boolean_doc_term.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911251259319_addf.resx">
+      <DependentUpon>201911251259319_addf.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

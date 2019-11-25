@@ -47,7 +47,7 @@ namespace AIR_SVU_S19.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID")] Term_Document term_Document)
+        public ActionResult Create([Bind(Include = "ID,Terms,Docs,Freg_Term_in_docs")] Term_Document term_Document)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace AIR_SVU_S19.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID")] Term_Document term_Document)
+        public ActionResult Edit([Bind(Include = "ID,Terms,Docs,Freg_Term_in_docs")] Term_Document term_Document)
         {
             if (ModelState.IsValid)
             {

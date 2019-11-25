@@ -12,6 +12,7 @@ namespace AIR_SVU_S19.Models
         public int ID { get; set; }
         public string Terms { get; set; }
         public string Docs { get; set; }
+        public string Freg_Term_in_docs { get; set; }
 
     }
 }

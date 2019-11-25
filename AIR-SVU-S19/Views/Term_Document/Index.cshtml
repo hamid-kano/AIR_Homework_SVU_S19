@@ -17,11 +17,29 @@
     </p>
     <table class="table">
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Terms)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Docs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Freg_Term_in_docs)
+            </th>
             <th></th>
         </tr>
     
     @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Terms)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Docs)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Freg_Term_in_docs)
+            </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
                 @Html.ActionLink("Details", "Details", new { id=item.ID }) |

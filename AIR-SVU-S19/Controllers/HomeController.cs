@@ -26,7 +26,6 @@ namespace AIR_SVU_S19.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
@@ -59,7 +58,6 @@ namespace AIR_SVU_S19.Controllers
             }
             return Json("Uploaded " + Request.Files.Count + " files");
         }
-        
         [HttpPost]
         public ActionResult Mainpulation_Text(FormCollection values)
         {
@@ -76,7 +74,6 @@ namespace AIR_SVU_S19.Controllers
             bool insertNewDoc = false;
             foreach (var file in Files_List)
             {
-               
                 if (file.File_content == null)
                 {
                     insertNewDoc = true;
@@ -89,42 +86,67 @@ namespace AIR_SVU_S19.Controllers
                     db.Entry(_file).State = EntityState.Modified;
                     db.SaveChanges();
                     doc.Close();
-                    poureText = Stopword_Arabic.RemoveStopwords(text);
+                    poureText = ReturnCleanASCII(text);
+                    poureText = Stopword_Arabic.RemoveStopwords(poureText);
                     poureText = Stopword_English.RemoveStopwords(poureText);
-                    poureText = ReturnCleanASCII(poureText);
+                    char[] charsSplit = {' '};
                     string wordStemm;
                     hashSet = new HashSet<string>((from a in db.Term_Document select a.Terms).Distinct());
                     int countTerm = hashSet.Count;
                     if (langSelect== "arabic")
                     {
                         ISRI_Stemmer_Arabic stemmerArabic = new ISRI_Stemmer_Arabic();
-                        foreach (var item in poureText.Split(' '))
+                        foreach (var item in poureText.Split(charsSplit,StringSplitOptions.RemoveEmptyEntries))
                         {
                             Term_Document newTerm = new Term_Document();
                             wordStemm = stemmerArabic.Stemming(item);
                             if (wordStemm.Length>2)
                             hashSet.Add(wordStemm);
+                            string OrderFreqTerm_in_docs = "";
+                            var CurrentFile = db.Files.Where(f => f.File_Name.Equals(file.File_Name)).FirstOrDefault();
                             if (countTerm<hashSet.Count)
                             {
                                 countTerm++;
                                 newTerm.Terms = wordStemm;
                                 newTerm.Docs = file.File_Name + " ";
+                                if (CurrentFile !=null)
+                                for (int i = 0; i < Files_List.Count; i++)
+                                {
+                                        OrderFreqTerm_in_docs += i == Files_List.IndexOf(CurrentFile) ? "1" + " " : "0" + " ";
+                                }
+                                newTerm.Freg_Term_in_docs = OrderFreqTerm_in_docs;
                                 db.Term_Document.Add(newTerm);
                                 db.SaveChanges();
                             }
                             else
                             {
-                                newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
-                              if (newTerm != null)
-                              {
+                                  newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
+                                  if (newTerm != null)
+                                  {
                                     var listDocs = newTerm.Docs.Split(' ');
                                     if (!listDocs.Contains(file.File_Name))
                                     {
-                                    newTerm.Docs += file.File_Name + " ";
-                                    db.Entry(newTerm).State = EntityState.Modified;
-                                    db.SaveChanges();
+                                        newTerm.Docs += file.File_Name + " ";
                                     }
-                              }
+                                    else
+                                    {
+                                        OrderFreqTerm_in_docs = "";
+                                       List<string> tempFreg_Term_in_docs = newTerm.Freg_Term_in_docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
+                                        if (tempFreg_Term_in_docs.Count < Files_List.Count) tempFreg_Term_in_docs.Add("0 ");
+                                        for (int i = 0; i < Files_List.Count; i++)
+                                        {
+                                            if (i == Files_List.IndexOf(CurrentFile))
+                                            {
+                                                int j = Convert.ToInt16(tempFreg_Term_in_docs[i]) + 1;
+                                                OrderFreqTerm_in_docs += j + " ";
+                                            }
+                                            OrderFreqTerm_in_docs += tempFreg_Term_in_docs[i] + " ";
+                                        }
+                                    }
+                                        newTerm.Freg_Term_in_docs = OrderFreqTerm_in_docs;
+                                        db.Entry(newTerm).State = EntityState.Modified;
+                                        db.SaveChanges();
+                                  }
                             }
                         }
                     }
@@ -212,17 +234,24 @@ namespace AIR_SVU_S19.Controllers
             else
             {
                 
-                var listFiles = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToUpper().Equals(stermWordQuery.ToUpper()) || t.Term.ToUpper().Equals(SearchValue.ToUpper())).FirstOrDefault();
+                var listFiles = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToUpper().Equals(stermWordQuery.ToUpper()) || t.Term.ToUpper().Equals(SearchValue.ToUpper()));
                 if (listFiles!=null)
                 {
-                    int index = 0;
-                    foreach (var item in listFiles.Docs.Split(' '))
+                    foreach (var row in listFiles)
                     {
-                        if (item == "1")
+                        int index = 0;
+                        foreach (var item in row.Docs.Split(' '))
                         {
-                            filesList.Add(db.Files.ToList()[index]);
+                            if (item == "1")
+                            {
+                                if (!filesList.Contains(db.Files.ToList()[index]))
+                                {
+                                    filesList.Add(db.Files.ToList()[index]);
+                                }
+                            }
+                            index++;
                         }
-                        index++;
+
                     }
                     return Json(filesList.ToList(), JsonRequestBehavior.AllowGet);
                 }

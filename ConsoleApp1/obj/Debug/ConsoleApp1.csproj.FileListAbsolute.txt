@@ -11,3 +11,4 @@ C:\Users\Abo Reda\Source\Repos\hamid-kano\AIR_Homework_SVU_S19\ConsoleApp1\bin\D
 C:\Users\Abo Reda\Source\Repos\hamid-kano\AIR_Homework_SVU_S19\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.CoreCompileInputs.cache
 C:\Users\Abo Reda\Source\Repos\hamid-kano\AIR_Homework_SVU_S19\ConsoleApp1\obj\Debug\ConsoleApp1.exe
 C:\Users\Abo Reda\Source\Repos\hamid-kano\AIR_Homework_SVU_S19\ConsoleApp1\obj\Debug\ConsoleApp1.pdb
+C:\Users\Abo Reda\Source\Repos\hamid-kano\AIR_Homework_SVU_S19\ConsoleApp1\obj\Debug\ConsoleApp1.csprojAssemblyReference.cache
