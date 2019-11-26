@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Word = Microsoft.Office.Interop.Word;
@@ -72,10 +73,12 @@ namespace AIR_SVU_S19.Controllers
             string poureText;
             IList<Files> Files_List = db.Files.ToList();
             bool insertNewDoc = false;
+            char[] charsSplit = { ' ' };
             foreach (var file in Files_List)
             {
                 if (file.File_content == null)
                 {
+                    db.SaveChanges();
                     insertNewDoc = true;
                     object path = file.File_Name;// @"C:\Users\حميد عبيد\source\repos\AIR-SVU-S19\AIR-SVU-S19\Files\1.doc";// file;
                     doc = app.Documents.Open(ref path, ref missing, ref readOnly, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
@@ -89,7 +92,6 @@ namespace AIR_SVU_S19.Controllers
                     poureText = ReturnCleanASCII(text);
                     poureText = Stopword_Arabic.RemoveStopwords(poureText);
                     poureText = Stopword_English.RemoveStopwords(poureText);
-                    char[] charsSplit = {' '};
                     string wordStemm;
                     hashSet = new HashSet<string>((from a in db.Term_Document select a.Terms).Distinct());
                     int countTerm = hashSet.Count;
@@ -102,19 +104,11 @@ namespace AIR_SVU_S19.Controllers
                             wordStemm = stemmerArabic.Stemming(item);
                             if (wordStemm.Length>2)
                             hashSet.Add(wordStemm);
-                            string OrderFreqTerm_in_docs = "";
-                            var CurrentFile = db.Files.Where(f => f.File_Name.Equals(file.File_Name)).FirstOrDefault();
                             if (countTerm<hashSet.Count)
                             {
                                 countTerm++;
                                 newTerm.Terms = wordStemm;
                                 newTerm.Docs = file.File_Name + " ";
-                                if (CurrentFile !=null)
-                                for (int i = 0; i < Files_List.Count; i++)
-                                {
-                                        OrderFreqTerm_in_docs += i == Files_List.IndexOf(CurrentFile) ? "1" + " " : "0" + " ";
-                                }
-                                newTerm.Freg_Term_in_docs = OrderFreqTerm_in_docs;
                                 db.Term_Document.Add(newTerm);
                                 db.SaveChanges();
                             }
@@ -123,27 +117,8 @@ namespace AIR_SVU_S19.Controllers
                                   newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
                                   if (newTerm != null)
                                   {
-                                    var listDocs = newTerm.Docs.Split(' ');
-                                    if (!listDocs.Contains(file.File_Name))
-                                    {
+                                        var listDocs = newTerm.Docs.Split(' ');
                                         newTerm.Docs += file.File_Name + " ";
-                                    }
-                                    else
-                                    {
-                                        OrderFreqTerm_in_docs = "";
-                                       List<string> tempFreg_Term_in_docs = newTerm.Freg_Term_in_docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
-                                        if (tempFreg_Term_in_docs.Count < Files_List.Count) tempFreg_Term_in_docs.Add("0 ");
-                                        for (int i = 0; i < Files_List.Count; i++)
-                                        {
-                                            if (i == Files_List.IndexOf(CurrentFile))
-                                            {
-                                                int j = Convert.ToInt16(tempFreg_Term_in_docs[i]) + 1;
-                                                OrderFreqTerm_in_docs += j + " ";
-                                            }
-                                            OrderFreqTerm_in_docs += tempFreg_Term_in_docs[i] + " ";
-                                        }
-                                    }
-                                        newTerm.Freg_Term_in_docs = OrderFreqTerm_in_docs;
                                         db.Entry(newTerm).State = EntityState.Modified;
                                         db.SaveChanges();
                                   }
@@ -204,6 +179,20 @@ namespace AIR_SVU_S19.Controllers
                 distinctTerm = db.Term_Document.Select(x => x.Terms).Distinct().ToHashSet<string>();
                 termDocumentIncidenceMatrix = BooleanQueryManipulationClass.GetTermDocumentIncidenceMatrix(distinctTerm, documentCollection);
                 insert_Distinct_Term_Docs_To_DB(termDocumentIncidenceMatrix);
+
+                ////////  Count Freq Term in Docs;
+                string OrderFreqTerm_in_docs = "";
+                Files_List = db.Files.ToList();
+                foreach (var term in db.Term_Document)
+                {
+                    foreach (var Name_Doc in Files_List)
+                    {
+                        OrderFreqTerm_in_docs+= Regex.Matches(term.Docs, Name_Doc.File_Name).Count.ToString()+" ";
+                    }
+                    term.Freg_Term_in_docs = OrderFreqTerm_in_docs;
+                    OrderFreqTerm_in_docs = "";
+                }
+                db.SaveChanges();
 
             }
             return RedirectToAction("Index");

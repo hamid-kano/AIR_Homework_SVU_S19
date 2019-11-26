@@ -84,8 +84,6 @@ namespace AIR_SVU_S19
         {
             string[] queryTerms = Regex.Split(document, "\\s");
             double count = 0;
-
-
             foreach (string t in queryTerms)
             {
                 if (t == term)
