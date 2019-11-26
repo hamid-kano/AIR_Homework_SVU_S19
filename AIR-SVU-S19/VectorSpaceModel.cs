@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using AIR_SVU_S19.Models;
 
 namespace AIR_SVU_S19
 {
@@ -13,11 +14,12 @@ namespace AIR_SVU_S19
         static List<string> wordlist = new List<string>(); //Terms From  OrderTerms_DocsBoolean's table in dataBase
         static string[] docs; // contents of docs;
         static string QueryText;
-        public static Hashtable Preparation_Vectors_Dcos(List<string> _wordlist , string[] _docs)
+        static char[] charsSplit = { ' ' };
+        public static Hashtable Preparation_Vectors_Dcos(List<string> _wordlist , string[] _docs,List<Term_Document> _FreqTermInDOC,List<OrderTerms_DocsBoolean> _ExistTermInDOC)
         {
             wordlist = _wordlist;
             docs = _docs;
-            return  createVector_For_Docs();
+            return  createVector_For_Docs(_FreqTermInDOC, _ExistTermInDOC);
         }
         // use when incoming query;
         public static void Add_Query_to_WordList()
@@ -41,18 +43,23 @@ namespace AIR_SVU_S19
 
 
 
-        public static Hashtable createVector_For_Docs()
+        public static Hashtable createVector_For_Docs(List<Term_Document> _FreqTermInDOC, List<OrderTerms_DocsBoolean> _ExistTermInDOC)
         {
-            double[] queryvector;
-            for (int j = 0; j < docs.Length; j++)
+            int countDocs = _ExistTermInDOC.First().Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).Length;
+            double[] queryvector = new double[countDocs];
+            foreach (var term in _ExistTermInDOC)
             {
-                queryvector = new double[wordlist.Count];
-                for (int i = 0; i < wordlist.Count; i++)
+                var docs= _FreqTermInDOC.Where(t => t.Terms.Equals(term.Term)).FirstOrDefault();
+                if (docs == null) continue;
+                for (int i = 0; i < countDocs; i++)
                 {
-                    double tfIDF = getTF(docs[j], wordlist[i]) * getIDF(wordlist[i]);
-                    queryvector[i] = tfIDF;
-                    DTVector.Add(j.ToString(), queryvector);
+                    int Freq = Convert.ToInt16(docs.Freg_Term_in_docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries)[i]);
+                    double freqTD = Math.Log(countDocs/Regex.Matches(term.Docs, "1").Count);
+                    if (freqTD < 0) freqTD = 0.0;
+                    double tfIDF = Freq * freqTD;
+                    queryvector[i] = Math.Round(tfIDF,2);
                 }
+                DTVector.Add(term.ID, queryvector);
             }
             return DTVector;
         }

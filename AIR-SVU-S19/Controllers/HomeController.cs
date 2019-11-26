@@ -1,5 +1,6 @@
 ﻿using AIR_SVU_S19.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
@@ -57,6 +58,7 @@ namespace AIR_SVU_S19.Controllers
                 db.SaveChanges();
                 }
             }
+            insertVectorTerm_to_DB();
             return Json("Uploaded " + Request.Files.Count + " files");
         }
         [HttpPost]
@@ -264,6 +266,30 @@ namespace AIR_SVU_S19.Controllers
                 output = "";
             }
             //System.IO.File.WriteAllText(@"D:\hamid.txt", output);
+
+        }
+
+        public void insertVectorTerm_to_DB()
+        {
+            string tempVectorTerm = "";
+            int TermID = 0;
+            string test = "";
+            string[] TempVector;
+            double[] TempVectorDo;
+            Hashtable DTVector = new Hashtable();
+            DTVector= VectorSpaceModel.createVector_For_Docs(db.Term_Document.ToList(),db.OrderTerms_DocsBoolean.ToList());
+            IDictionaryEnumerator _enumerator = DTVector.GetEnumerator();
+            double[] queryvector = new double[db.OrderTerms_DocsBoolean.ToList().Count];
+            while (_enumerator.MoveNext())
+            {
+                TempVectorDo = (double[])_enumerator.Value;
+                 TempVector = TempVectorDo.Select(x => x.ToString()).ToArray();
+                tempVectorTerm = string.Join(" ", TempVector);
+                TermID = (int)_enumerator.Key;
+                //test write to file
+                test += TermID + " == " + tempVectorTerm+Environment.NewLine;
+            }
+              System.IO.File.WriteAllText(@"D:\testVector.txt", test);
 
         }
     }

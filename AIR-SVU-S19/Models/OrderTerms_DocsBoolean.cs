@@ -14,5 +14,7 @@ namespace AIR_SVU_S19.Models
         public string Term { get; set; }
         [StringLength(200, MinimumLength = 1, ErrorMessage = "field must be atleast 1 character")]
         public string Docs { get; set; }
+        [StringLength(500, MinimumLength = 1, ErrorMessage = "field must be atleast 1 character")]
+        public string  VectorTerm { get; set; }
     }
 }

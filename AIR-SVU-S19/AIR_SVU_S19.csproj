@@ -188,6 +188,10 @@
     <Compile Include="Migrations\201911251259319_addf.designer.cs">
       <DependentUpon>201911251259319_addf.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911261937122_vectorTerm.cs" />
+    <Compile Include="Migrations\201911261937122_vectorTerm.designer.cs">
+      <DependentUpon>201911261937122_vectorTerm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Files.cs" />
     <Compile Include="Models\OrderTerms_DocsBoolean.cs" />
@@ -362,6 +366,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911251259319_addf.resx">
       <DependentUpon>201911251259319_addf.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911261937122_vectorTerm.resx">
+      <DependentUpon>201911261937122_vectorTerm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
