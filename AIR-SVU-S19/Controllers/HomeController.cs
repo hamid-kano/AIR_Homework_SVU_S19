@@ -108,7 +108,7 @@ namespace AIR_SVU_S19.Controllers
                             {
                                 countTerm++;
                                 newTerm.Terms = wordStemm;
-                                newTerm.Docs = file.File_Name + " ";
+                                newTerm.Docs = " "+ file.File_Name ;
                                 db.Term_Document.Add(newTerm);
                                 db.SaveChanges();
                             }
@@ -117,8 +117,7 @@ namespace AIR_SVU_S19.Controllers
                                   newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
                                   if (newTerm != null)
                                   {
-                                        var listDocs = newTerm.Docs.Split(' ');
-                                        newTerm.Docs += file.File_Name + " ";
+                                        newTerm.Docs += " "+ file.File_Name ;
                                         db.Entry(newTerm).State = EntityState.Modified;
                                         db.SaveChanges();
                                   }
@@ -138,7 +137,7 @@ namespace AIR_SVU_S19.Controllers
                             {
                                 countTerm++;
                                 newTerm.Terms = wordStemm;
-                                newTerm.Docs = file.File_Name + " ";
+                                newTerm.Docs = " " + file.File_Name ;
                                 db.Term_Document.Add(newTerm);
                                 db.SaveChanges();
                             }
@@ -147,13 +146,9 @@ namespace AIR_SVU_S19.Controllers
                                 newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
                                 if (newTerm != null)
                                 {
-                                    var listDocs = newTerm.Docs.Split(' ');
-                                    if (!listDocs.Contains(file.File_Name))
-                                    {
-                                        newTerm.Docs += file.File_Name + " ";
+                                        newTerm.Docs += " " + file.File_Name ;
                                         db.Entry(newTerm).State = EntityState.Modified;
                                         db.SaveChanges();
-                                    }
                                 }
                             }
                         }
@@ -174,7 +169,10 @@ namespace AIR_SVU_S19.Controllers
                 foreach (var file in listOfDocument)
                 {
                     List<string> listTermDoc = db.Term_Document.Where(d => d.Docs.Contains(file)).Select(t => t.Terms).ToList<string>();
-                    documentCollection.Add(file, listTermDoc);
+                    if (!documentCollection.ContainsKey(file))
+                    {
+                        documentCollection.Add(file, listTermDoc);
+                    }
                 }
                 distinctTerm = db.Term_Document.Select(x => x.Terms).Distinct().ToHashSet<string>();
                 termDocumentIncidenceMatrix = BooleanQueryManipulationClass.GetTermDocumentIncidenceMatrix(distinctTerm, documentCollection);
@@ -187,7 +185,7 @@ namespace AIR_SVU_S19.Controllers
                 {
                     foreach (var Name_Doc in Files_List)
                     {
-                        OrderFreqTerm_in_docs+= Regex.Matches(term.Docs, Name_Doc.File_Name).Count.ToString()+" ";
+                        OrderFreqTerm_in_docs+= Regex.Matches(term.Docs, " "+Name_Doc.File_Name).Count.ToString()+" ";
                     }
                     term.Freg_Term_in_docs = OrderFreqTerm_in_docs;
                     OrderFreqTerm_in_docs = "";
