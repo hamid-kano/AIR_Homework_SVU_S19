@@ -19,7 +19,7 @@ namespace AIR_SVU_S19
         {
             wordlist = _wordlist;
             docs = _docs;
-            return  createVector_For_Docs(_FreqTermInDOC, _ExistTermInDOC);
+            return null;// createVector_For_Docs(_FreqTermInDOC, _ExistTermInDOC);
         }
         // use when incoming query;
         public static void Add_Query_to_WordList()
@@ -43,8 +43,9 @@ namespace AIR_SVU_S19
 
 
 
-        public static Hashtable createVector_For_Docs(List<Term_Document> _FreqTermInDOC, List<OrderTerms_DocsBoolean> _ExistTermInDOC)
+        public static Dictionary<int, double[]> createVector_For_Docs(List<Term_Document> _FreqTermInDOC, List<OrderTerms_DocsBoolean> _ExistTermInDOC)
         {
+            Dictionary<int, double[]> dictionary = new Dictionary<int, double []>();
             int countDocs = _ExistTermInDOC.First().Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).Length;
             double[] queryvector = new double[countDocs];
             foreach (var term in _ExistTermInDOC)
@@ -59,9 +60,10 @@ namespace AIR_SVU_S19
                     double tfIDF = Freq * freqTD;
                     queryvector[i] = Math.Round(tfIDF,2);
                 }
-                DTVector.Add(term.ID, queryvector);
+                dictionary.Add(term.ID, queryvector);
+                queryvector = new double[countDocs];
             }
-            return DTVector;
+            return dictionary;
         }
         public static double dotproduct(double[] v1, double[] v2)
         {

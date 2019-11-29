@@ -369,11 +369,10 @@ namespace AIR_SVU_S19
                 string lowerWord = currentWord.ToLower();
                 // 6
                 // If this is a usable word, add it
-                if (!_stops.ContainsKey(lowerWord) &&
-                    !found.ContainsKey(lowerWord))
+                if (!_stops.ContainsKey(lowerWord)) //&&!found.ContainsKey(lowerWord))
                 {
                     builder.Append(currentWord).Append(' ');
-                    found.Add(lowerWord, true);
+                    // found.Add(lowerWord, true);
                 }
             }
             // 7

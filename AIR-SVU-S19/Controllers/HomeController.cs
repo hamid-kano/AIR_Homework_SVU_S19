@@ -1,9 +1,7 @@
 ﻿using AIR_SVU_S19.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -58,7 +56,6 @@ namespace AIR_SVU_S19.Controllers
                 db.SaveChanges();
                 }
             }
-            insertVectorTerm_to_DB();
             return Json("Uploaded " + Request.Files.Count + " files");
         }
         [HttpPost]
@@ -72,7 +69,7 @@ namespace AIR_SVU_S19.Controllers
             Word.Document doc;
             object missing = Type.Missing;
             object readOnly = true;
-            string poureText;
+            string poureText="";
             IList<Files> Files_List = db.Files.ToList();
             bool insertNewDoc = false;
             char[] charsSplit = { ' ' };
@@ -92,6 +89,11 @@ namespace AIR_SVU_S19.Controllers
                     db.SaveChanges();
                     doc.Close();
                     poureText = ReturnCleanASCII(text);
+                    //MatchCollection mc = Regex.Matches(text,"\\w+ ") ; // Regex.Escape(text);
+                    //foreach (Match mt in mc)
+                    //{
+                    //    poureText +=" "+ mt.ToString();
+                    //}
                     poureText = Stopword_Arabic.RemoveStopwords(poureText);
                     poureText = Stopword_English.RemoveStopwords(poureText);
                     string wordStemm;
@@ -193,7 +195,7 @@ namespace AIR_SVU_S19.Controllers
                     OrderFreqTerm_in_docs = "";
                 }
                 db.SaveChanges();
-
+                insertVectorTerm_to_DB(); // for comput Vector Term for All Documents
             }
             return RedirectToAction("Index");
         }
@@ -205,9 +207,9 @@ namespace AIR_SVU_S19.Controllers
                 if (c == 'ـ')
                 continue;
                 if (Char.IsLetterOrDigit(c))
-                sb.Append(c);
+                    sb.Append(c);
                 else
-                sb.Append(' ');
+                     sb.Append(' ');
             }
             return sb.ToString();
         }
@@ -271,21 +273,25 @@ namespace AIR_SVU_S19.Controllers
 
         public void insertVectorTerm_to_DB()
         {
+            Dictionary<int, double[]> dictionary = new Dictionary<int, double[]>();
             string tempVectorTerm = "";
             int TermID = 0;
             string test = "";
             string[] TempVector;
             double[] TempVectorDo;
-            Hashtable DTVector = new Hashtable();
-            DTVector= VectorSpaceModel.createVector_For_Docs(db.Term_Document.ToList(),db.OrderTerms_DocsBoolean.ToList());
-            IDictionaryEnumerator _enumerator = DTVector.GetEnumerator();
+            dictionary = VectorSpaceModel.createVector_For_Docs(db.Term_Document.ToList(),db.OrderTerms_DocsBoolean.ToList());
             double[] queryvector = new double[db.OrderTerms_DocsBoolean.ToList().Count];
-            while (_enumerator.MoveNext())
+            foreach (var TermVector in dictionary)
             {
-                TempVectorDo = (double[])_enumerator.Value;
+                TempVectorDo = TermVector.Value;
                  TempVector = TempVectorDo.Select(x => x.ToString()).ToArray();
                 tempVectorTerm = string.Join(" ", TempVector);
-                TermID = (int)_enumerator.Key;
+                TermID = TermVector.Key;
+                /// insert after recive 
+                var distinctTerm = db.OrderTerms_DocsBoolean.Find(TermVector.Key);
+                distinctTerm.VectorTerm = tempVectorTerm;
+                db.Entry(distinctTerm).State = EntityState.Modified;
+                db.SaveChanges();
                 //test write to file
                 test += TermID + " == " + tempVectorTerm+Environment.NewLine;
             }
