@@ -35,6 +35,29 @@ namespace AIR_SVU_S19.Controllers
 
             return View();
         }
+        public ActionResult ResultSearch(string AlgorithmRetrieve, string TxT_Search_Key)
+        {
+            List<Files> fileR = new List<Files>();
+            Dictionary<string, double> resutlFR = VectorSpace(TxT_Search_Key);
+            var sortedDict = from file in resutlFR orderby file.Value descending select file;
+
+            if (AlgorithmRetrieve == "vector_space")
+            {
+                foreach (var item in sortedDict)
+                {
+                    if (item.Value>0)
+                    {
+                        fileR.Add(db.Files.Find(Convert.ToInt16(item.Key)));
+                    }
+                }
+            }
+            else if (AlgorithmRetrieve == "ex_boolean")
+            { }
+            else
+            { }
+            ViewBag.Message = "Your contact page.";
+            return View(fileR);
+        }
         public JsonResult Upload()
         {
             for (int i = 0; i < Request.Files.Count; i++)
@@ -134,20 +157,20 @@ namespace AIR_SVU_S19.Controllers
                         foreach (var item in poureText.Split(' '))
                         {
                             Term_Document newTerm = new Term_Document();
-                            wordStemm = stemmerEnglish.stem(item);
+                            wordStemm = stemmerEnglish.stem(item.ToLower());
                             if (wordStemm.Length > 2)
                                 hashSet.Add(wordStemm);
                             if (countTerm < hashSet.Count)
                             {
                                 countTerm++;
-                                newTerm.Terms = wordStemm;
+                                newTerm.Terms = wordStemm.ToLower();
                                 newTerm.Docs = " " + file.File_Name ;
                                 db.Term_Document.Add(newTerm);
                                 db.SaveChanges();
                             }
                             else
                             {
-                                newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
+                                newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm.ToLower())).FirstOrDefault();
                                 if (newTerm != null)
                                 {
                                         newTerm.Docs += " " + file.File_Name ;
@@ -181,7 +204,6 @@ namespace AIR_SVU_S19.Controllers
                 distinctTerm = db.Term_Document.Select(x => x.Terms).Distinct().ToHashSet<string>();
                 termDocumentIncidenceMatrix = BooleanQueryManipulationClass.GetTermDocumentIncidenceMatrix(distinctTerm, documentCollection);
                 insert_Distinct_Term_Docs_To_DB(termDocumentIncidenceMatrix);
-
                 ////////  Count Freq Term in Docs;
                 string OrderFreqTerm_in_docs = "";
                 Files_List = db.Files.ToList();
@@ -199,56 +221,54 @@ namespace AIR_SVU_S19.Controllers
             }
             return RedirectToAction("Index");
         }
-        public string ReturnCleanASCII(string s)
+        public JsonResult GetSearchingData(FormCollection values)
         {
-            StringBuilder sb = new StringBuilder(s.Length);
-           foreach (char c in s)
-            {
-                if (c == 'ـ')
-                continue;
-                if (Char.IsLetterOrDigit(c))
-                    sb.Append(c);
-                else
-                     sb.Append(' ');
-            }
-            return sb.ToString();
-        }
-        public JsonResult GetSearchingData(string SearchBy, string SearchValue ,string SearchModel)
-        {
-            Porter_Stemmer_English porterStem = new Porter_Stemmer_English();
-            string stermWordQuery = porterStem.stem(SearchValue);
-            List<Files> filesList = new List<Files>();
-            if (SearchValue=="")
-            {
-                return Json(db.Files.ToList(), JsonRequestBehavior.AllowGet);
-            }
+          string QM = values["AlgorithmRetrieve"];
+          string Query = values["TxT_Search_Key"];
+           if (Query == "vector_space")
+           {
+               Dictionary<string, double> resutlFR = VectorSpace(Query);
+               List<Files> fileR = new List<Files>();
+               foreach (var item in resutlFR)
+               {
+                   fileR.Add(db.Files.Find(Convert.ToInt16(item.Key)));
+               }
+                return Json(fileR.ToList(), JsonRequestBehavior.AllowGet);
+           }
             else
-            {
-                
-                var listFiles = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToUpper().Equals(stermWordQuery.ToUpper()) || t.Term.ToUpper().Equals(SearchValue.ToUpper()));
-                if (listFiles!=null)
+            { 
+                Porter_Stemmer_English porterStem = new Porter_Stemmer_English();
+                string stermWordQuery = porterStem.stem(Query);
+                List<Files> filesList = new List<Files>();
+                if (Query == "")
                 {
-                    foreach (var row in listFiles)
-                    {
-                        int index = 0;
-                        foreach (var item in row.Docs.Split(' '))
-                        {
-                            if (item == "1")
-                            {
-                                if (!filesList.Contains(db.Files.ToList()[index]))
-                                {
-                                    filesList.Add(db.Files.ToList()[index]);
-                                }
-                            }
-                            index++;
-                        }
-
-                    }
-                    return Json(filesList.ToList(), JsonRequestBehavior.AllowGet);
+                    return Json(db.Files.ToList(), JsonRequestBehavior.AllowGet);
                 }
-                return null;
-            }
-           // return null;
+                else
+                {
+                    var listFiles = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToUpper().Equals(stermWordQuery.ToUpper()) || t.Term.ToUpper().Equals(Query.ToUpper()));
+                    if (listFiles != null)
+                    {
+                        foreach (var row in listFiles)
+                        {
+                            int index = 0;
+                            foreach (var item in row.Docs.Split(' '))
+                            {
+                                if (item == "1")
+                                {
+                                    if (!filesList.Contains(db.Files.ToList()[index]))
+                                    {
+                                        filesList.Add(db.Files.ToList()[index]);
+                                    }
+                                }
+                                index++;
+                            }
+                        }
+                        return Json(filesList.ToList(), JsonRequestBehavior.AllowGet);
+                    }
+                    return null;
+                }
+            }           // return null;
         }
         public void insert_Distinct_Term_Docs_To_DB(Dictionary<string, List<int>> termDocumentIncidenceMatrix)
         {
@@ -268,9 +288,7 @@ namespace AIR_SVU_S19.Controllers
                 output = "";
             }
             //System.IO.File.WriteAllText(@"D:\hamid.txt", output);
-
         }
-
         public void insertVectorTerm_to_DB()
         {
             Dictionary<int, double[]> dictionary = new Dictionary<int, double[]>();
@@ -296,7 +314,25 @@ namespace AIR_SVU_S19.Controllers
                 test += TermID + " == " + tempVectorTerm+Environment.NewLine;
             }
               System.IO.File.WriteAllText(@"D:\testVector.txt", test);
-
+        }
+        public Dictionary<string, double> VectorSpace(string QueryText)
+        {
+            Dictionary<string, double> FRVS = VectorSpaceModel.R_Docs_VS(QueryText);
+            return FRVS;
+        }
+        public string ReturnCleanASCII(string s)
+        {
+            StringBuilder sb = new StringBuilder(s.Length);
+            foreach (char c in s)
+            {
+                if (c == 'ـ')
+                    continue;
+                if (Char.IsLetterOrDigit(c))
+                    sb.Append(c);
+                else
+                    sb.Append(' ');
+            }
+            return sb.ToString();
         }
     }
 }

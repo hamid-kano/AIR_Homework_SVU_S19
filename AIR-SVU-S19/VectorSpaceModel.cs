@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using AIR_SVU_S19.Models;
@@ -10,38 +11,8 @@ namespace AIR_SVU_S19
 {
     public static class VectorSpaceModel
     {
-        static Hashtable DTVector = new Hashtable(); //Hashtable to hold Document Term Vector
-        static List<string> wordlist = new List<string>(); //Terms From  OrderTerms_DocsBoolean's table in dataBase
-        static string[] docs; // contents of docs;
-        static string QueryText;
         static char[] charsSplit = { ' ' };
-        public static Hashtable Preparation_Vectors_Dcos(List<string> _wordlist , string[] _docs,List<Term_Document> _FreqTermInDOC,List<OrderTerms_DocsBoolean> _ExistTermInDOC)
-        {
-            wordlist = _wordlist;
-            docs = _docs;
-            return null;// createVector_For_Docs(_FreqTermInDOC, _ExistTermInDOC);
-        }
-        // use when incoming query;
-        public static void Add_Query_to_WordList()
-        {
-                wordlist = getWordList(wordlist, docs[0]);
-        }
-        public static List<string> getWordList(List<string> wordlist, string query)
-        {
-            Regex exp = new Regex("\\w+", RegexOptions.IgnoreCase);
-            MatchCollection MCollection = exp.Matches(query);
-
-            foreach (Match match in MCollection)
-            {
-                if (!wordlist.Contains(match.Value))
-                {
-                    wordlist.Add(match.Value);
-                }
-            }
-            return wordlist;
-        }
-
-
+        static AIR_SVU_S19_Model db = new AIR_SVU_S19_Model();
 
         public static Dictionary<int, double[]> createVector_For_Docs(List<Term_Document> _FreqTermInDOC, List<OrderTerms_DocsBoolean> _ExistTermInDOC)
         {
@@ -65,6 +36,43 @@ namespace AIR_SVU_S19
             }
             return dictionary;
         }
+        public static double[] createVector_For_Query(string Query)
+        {
+            var listBooleanTerm = db.OrderTerms_DocsBoolean.ToList();
+            string poureText = ReturnCleanASCII(Query);
+            int count_File = db.Files.Count();
+            double[] queryvector = new double[listBooleanTerm.Count];
+            poureText = Stopword_Arabic.RemoveStopwords(poureText);
+            poureText = Stopword_English.RemoveStopwords(poureText);
+            int i = 0;
+            foreach (var item in listBooleanTerm)
+            {
+                    int FTQ = Regex.Matches(poureText, item.Term,RegexOptions.IgnoreCase).Count;
+                    double freqTD = Math.Log(count_File / Regex.Matches(item.Docs, "1").Count);
+                    if (freqTD < 0) freqTD = 0.0;
+                    double tfIDF = FTQ * freqTD;
+                    queryvector[i] = Math.Round(tfIDF, 2);
+                i++;
+            }
+            return queryvector;
+        }
+        public static string ReturnCleanASCII(string s)
+        {
+            StringBuilder sb = new StringBuilder(s.Length);
+            foreach (char c in s)
+            {
+                if (c == 'ـ')
+                    continue;
+                if (Char.IsLetterOrDigit(c))
+                    sb.Append(c);
+                else
+                    sb.Append(' ');
+            }
+            return sb.ToString();
+        }
+
+
+
         public static double dotproduct(double[] v1, double[] v2)
         {
             double product = 0.0;
@@ -89,51 +97,37 @@ namespace AIR_SVU_S19
             return Math.Sqrt(length);
         }
         // term frequence in docs
-        private static double getTF(string document, string term)
-        {
-            string[] queryTerms = Regex.Split(document, "\\s");
-            double count = 0;
-            foreach (string t in queryTerms)
-            {
-                if (t == term)
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-
-        private static double getIDF(string term)
-        {
-            double df = 0.0;
-            //get term frequency of all of the sentences except for the query
-            for (int i = 0; i < docs.Length; i++)
-            {
-                if (docs[i].Contains(term))
-                {
-                    df++;
-                }
-            }
-
-            //Get sentence count
-            double D = docs.Length;
-
-            double IDF = 0.0;
-
-            if (df > 0)
-            {
-                IDF = Math.Log(D / df);
-            }
-
-            return IDF;
-        }
-
         public static double cosinetheta(double[] v1, double[] v2)
         {
             double lengthV1 = vectorlength(v1);
             double lengthV2 = vectorlength(v2);
             double dotprod = dotproduct(v1, v2);
             return dotprod / (lengthV1 * lengthV2);
+        }
+
+
+
+        public static Dictionary<string,double> R_Docs_VS(string QueryTXT)
+        {
+            Dictionary<string, double> listFR = new Dictionary<string, double>();
+            double[] QV = createVector_For_Query(QueryTXT);
+            int countTermDistinct = db.OrderTerms_DocsBoolean.Count();
+            double[] FV = new double[countTermDistinct];
+            int indexFile = 0;
+            int indexTerm ;
+            foreach (var item in db.Files)
+            {
+                indexTerm = 0;
+                foreach (var term in db.OrderTerms_DocsBoolean)
+                {
+                    FV[indexTerm] =Convert.ToDouble(term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries)[indexFile]);
+                    indexTerm++;
+                } 
+                double temp = cosinetheta(QV, FV);
+                listFR.Add(item.File_ID.ToString(), temp);
+                indexFile++;
+            }
+            return listFR;
         }
 
     }
