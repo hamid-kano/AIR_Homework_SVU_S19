@@ -40,7 +40,6 @@ namespace AIR_SVU_S19.Controllers
             List<Files> fileR = new List<Files>();
             Dictionary<string, double> resutlFR = VectorSpace(TxT_Search_Key);
             var sortedDict = from file in resutlFR orderby file.Value descending select file;
-
             if (AlgorithmRetrieve == "vector_space")
             {
                 foreach (var item in sortedDict)
@@ -55,7 +54,6 @@ namespace AIR_SVU_S19.Controllers
             { }
             else
             { }
-            ViewBag.Message = "Your contact page.";
             return View(fileR);
         }
         public JsonResult Upload()
@@ -221,55 +219,6 @@ namespace AIR_SVU_S19.Controllers
             }
             return RedirectToAction("Index");
         }
-        public JsonResult GetSearchingData(FormCollection values)
-        {
-          string QM = values["AlgorithmRetrieve"];
-          string Query = values["TxT_Search_Key"];
-           if (Query == "vector_space")
-           {
-               Dictionary<string, double> resutlFR = VectorSpace(Query);
-               List<Files> fileR = new List<Files>();
-               foreach (var item in resutlFR)
-               {
-                   fileR.Add(db.Files.Find(Convert.ToInt16(item.Key)));
-               }
-                return Json(fileR.ToList(), JsonRequestBehavior.AllowGet);
-           }
-            else
-            { 
-                Porter_Stemmer_English porterStem = new Porter_Stemmer_English();
-                string stermWordQuery = porterStem.stem(Query);
-                List<Files> filesList = new List<Files>();
-                if (Query == "")
-                {
-                    return Json(db.Files.ToList(), JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    var listFiles = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToUpper().Equals(stermWordQuery.ToUpper()) || t.Term.ToUpper().Equals(Query.ToUpper()));
-                    if (listFiles != null)
-                    {
-                        foreach (var row in listFiles)
-                        {
-                            int index = 0;
-                            foreach (var item in row.Docs.Split(' '))
-                            {
-                                if (item == "1")
-                                {
-                                    if (!filesList.Contains(db.Files.ToList()[index]))
-                                    {
-                                        filesList.Add(db.Files.ToList()[index]);
-                                    }
-                                }
-                                index++;
-                            }
-                        }
-                        return Json(filesList.ToList(), JsonRequestBehavior.AllowGet);
-                    }
-                    return null;
-                }
-            }           // return null;
-        }
         public void insert_Distinct_Term_Docs_To_DB(Dictionary<string, List<int>> termDocumentIncidenceMatrix)
         {
             AIR_SVU_S19_Model db = new AIR_SVU_S19_Model();
@@ -334,5 +283,6 @@ namespace AIR_SVU_S19.Controllers
             }
             return sb.ToString();
         }
+     
     }
 }

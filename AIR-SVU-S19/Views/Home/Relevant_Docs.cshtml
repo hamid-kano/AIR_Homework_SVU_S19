@@ -97,10 +97,6 @@
     <!-- Header section end  -->
     @*class="row justify-content-center"  for center content *@
     <div style="background:#ffffff;padding-top:100px;margin-bottom:300px; height:1000px">
-        @*<div>
-                @Html.Label("StudentName", "Key Search :", new { @class = "form-control" })
-                @Html.TextBox("myTextBox", "This is value", new { @class = "form-control" })
-            </div>*@
 
         @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
         {
@@ -110,7 +106,7 @@
                 <div class="form-group">
                     <div class="container justify-content-center row">
                         <div class="col-md-auto">
-                            <label style="font-family:Al-Jazeera-Arabic;font-size:large" class="col-form-label-sm">Key Search :</label>    @*@Html.Label("lbl_Search_Key", "Key Search :", htmlAttributes: new { @class = "control-label" })*@
+                            <label style="font-family:Al-Jazeera-Arabic;font-size:large" class="col-form-label-sm">Key Search :</label> 
                         </div>
                         <div class="col-md-3 ">
                             @Html.Editor("TxT_Search_Key", "This is value", new { htmlAttributes = new { @class = "form-control" } })
@@ -134,55 +130,6 @@
         }
         <br />
         <br />
-        @*<div class="container">
-                <b>Search By : </b>
-                <select id="SearchBy">
-                    <option value="Name">Name</option>
-                    <option value="ID">ID</option>
-                </select><br /><br />
-                @Html.TextBox("Search")<input type="submit" id="SearchBtn" value="Search" /><br /><br />
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody id="DataSearching">
-                    </tbody>
-                </table>
-            </div>*@
-        @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>
-            <script>
-                $(document).ready(function () {
-                    $("#SearchBtn").click(function () {
-                        var SearchBy = $("#SearchBy").val();
-                        var SearchValue = $("#Search").val();
-                        var SearchModel = $("#AlgorithmRetrieve").val();
-                        var SetData = $("#DataSearching");
-                        SetData.html("");
-                        $.ajax({
-                            type: "post",
-                            url: "/Home/GetSearchingData?SearchBy=" + SearchBy + "&SearchValue=" + SearchValue + "&SearchModel="+ SearchModel,
-                            contentType: "html",
-                            success: function (result) {
-                                if (result.length == 0) {
-                                    SetData.append('<tr style="color:red"><td colspan="3">No Match Data</td></tr>')
-                                }
-                                else {
-                                    $.each(result, function (index, value) {
-                                        var Data = "<tr>" +
-                                            "<td>" + value.File_ID + "</td>" +
-                                            "<td>" + value.File_Name + "</td>" +
-                                            "</tr>";
-                                        SetData.append(Data);
-                                    });
-                                }
-                            }
-                        });
-                    });
-                });
-            </script>*@
     </div>
     <!-- Call to action section  -->
     <section class="cta-section">

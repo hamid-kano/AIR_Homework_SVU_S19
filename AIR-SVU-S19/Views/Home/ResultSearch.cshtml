@@ -99,11 +99,6 @@
     <!-- Header section end  -->
     @*class="row justify-content-center"  for center content *@
     <div style="background:#ffffff;padding-top:100px;margin-bottom:300px; height:1000px">
-        @*<div>
-                @Html.Label("StudentName", "Key Search :", new { @class = "form-control" })
-                @Html.TextBox("myTextBox", "This is value", new { @class = "form-control" })
-            </div>*@
-
         @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
         {
             @Html.AntiForgeryToken()
@@ -130,92 +125,70 @@
                     <div class="container" style="width:15%">
                         <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="بحث" class="btn btn-success form-control " />
                     </div>
-                    <br />
-                    <table id="tblMethods">
-                        <tr>
-                            <th>
-                                Property Name
-                            </th>
-                            <th>
-                                Request
-                            </th>
-                        </tr>
-
-                        @if (Model.Count() == 0)
-                        {
-                            <tr> Records not found</tr>
-                        }
-                        else
-                        {
-                            foreach (var result in Model)
+                    <hr />
+                    <div  style="margin-left:0px;margin-right:0px" class="row container justify-content-center">
+                        <div style="max-width: 100%;" class="col-md-6">
+                            <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">Search Result :</label><hr />
+                            @if (Model.Count() == 0)
                             {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(m => result.File_ID)
-                                    </td>
-                                    <td>
-                                        @Html.TextBoxFor(m => result.File_Name)
-                                    </td>
-                                </tr>
+                                <h4>Records not found</h4>
                             }
+                            else
+                            {<table class="table table-bordered">
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Rank</th>
+                                    </tr>
+                                    @foreach (var result in Model)
+                                    {
+                                        <tr>
+                                            <td onclick="contentFile('hamid')">
+                                                <span class="dot"></span>
+                                                <a href="#">@Server.MapPath("/").Substring(20)Files\@result.File_Name</a><br />
+                                                <h5 style="color:darkgray;display: inline;">File Name:</h5>
+                                                <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
+                                                <br />
+                                                <p id="Paragraph">@result.File_content.Substring(0, 25)</p>
+                                                <input type="button" value="Assign" onclick="AssignButtonClicked(this)"
+                                                       data-assigned-id="@result.File_content" />
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </table>
+
+                            }
+                        </div>
+                        <div style="margin-left:0px;margin-right:0px" class="row justify-content-center">
+                            <div style="max-width: 100%;" class="col-md-6">
+                                <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">File's Content:</label><hr />
+                                <textarea style="overflow: auto; white-space:normal;text-align:justify; -moz-text-align-last: center; text-align-last: center ;height:500px" wrap="soft" cols="60" rows="5" id="fileContent"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        function AssignButtonClicked(elem){
+                            var contentFile = $(elem).data('assigned-id');
+                            document.getElementById("fileContent").textContent=contentFile;
                         }
-                    </table>
+                    </script>
                 </div>
             </div>
-        }
-        <br />
-        <br />
 
-        @*<div class="container">
-                <b>Search By : </b>
-                <select id="SearchBy">
-                    <option value="Name">Name</option>
-                    <option value="ID">ID</option>
-                </select><br /><br />
-                @Html.TextBox("Search")<input type="submit" id="SearchBtn" value="Search" /><br /><br />
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody id="DataSearching">
-                    </tbody>
-                </table>
-            </div>*@
-        @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>
-            <script>
-                $(document).ready(function () {
-                    $("#SearchBtn").click(function () {
-                        var SearchBy = $("#SearchBy").val();
-                        var SearchValue = $("#Search").val();
-                        var SearchModel = $("#AlgorithmRetrieve").val();
-                        var SetData = $("#DataSearching");
-                        SetData.html("");
-                        $.ajax({
-                            type: "post",
-                            url: "/Home/GetSearchingData?SearchBy=" + SearchBy + "&SearchValue=" + SearchValue + "&SearchModel="+ SearchModel,
-                            contentType: "html",
-                            success: function (result) {
-                                if (result.length == 0) {
-                                    SetData.append('<tr style="color:red"><td colspan="3">No Match Data</td></tr>')
-                                }
-                                else {
-                                    $.each(result, function (index, value) {
-                                        var Data = "<tr>" +
-                                            "<td>" + value.File_ID + "</td>" +
-                                            "<td>" + value.File_Name + "</td>" +
-                                            "</tr>";
-                                        SetData.append(Data);
-                                    });
-                                }
-                            }
-                        });
-                    });
-                });
-            </script>*@
+        }
     </div>
+    <style>
+        .dot {
+            height: 15px;
+            width: 15px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
     <!-- Call to action section  -->
     <section class="cta-section">
         <div class="container">
@@ -239,8 +212,6 @@
             </form>
         </div>
     </div>
-    <!-- Search model end -->
-    <!--====== Javascripts & Jquery ======-->
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/circle-progress.min.js"></script>
     <script src="~/js/jquery-3.2.1.min.js"></script>
