@@ -126,12 +126,12 @@
                         <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="بحث" class="btn btn-success form-control " />
                     </div>
                     <hr />
-                    <div  style="margin-left:0px;margin-right:0px" class="row container justify-content-center">
+                    <div style="margin-left:0px;margin-right:0px" class="row container justify-content-center">
                         <div style="max-width: 100%;" class="col-md-6">
                             <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">Search Result :</label><hr />
                             @if (Model.Count() == 0)
                             {
-                                <h4>Records not found</h4>
+                                <h4 style="color:deepskyblue">Records not found</h4>
                             }
                             else
                             {<table class="table table-bordered">
@@ -156,23 +156,33 @@
                                             </td>
                                         </tr>
                                     }
-
-
                                 </table>
-
                             }
                         </div>
-                        <div style="margin-left:0px;margin-right:0px" class="row justify-content-center">
-                            <div style="max-width: 100%;" class="col-md-6">
+                            <div id="bodydesc" style="max-width: 100%;" class="col-md-6">
                                 <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">File's Content:</label><hr />
-                                <textarea style="overflow: auto; white-space:normal;text-align:justify; -moz-text-align-last: center; text-align-last: center ;height:500px" wrap="soft" cols="60" rows="5" id="fileContent"></textarea>
+                                <p id="desc" style="overflow-y: scroll;height:600px; align-content:center">
+                                    //Here is my large content with images...
+                                </p>
                             </div>
                         </div>
-                    </div>
                     <script>
-                        function AssignButtonClicked(elem){
+                        function AssignButtonClicked(elem) {
                             var contentFile = $(elem).data('assigned-id');
-                            document.getElementById("fileContent").textContent=contentFile;
+                            document.getElementById("desc").textContent = contentFile;
+                            $.fn.wrapInTag = function(opts) {
+                              var tag = opts.tag || 'strong',
+                                  words = opts.words || [],
+                                  regex = RegExp(words.join('|'), 'gi'),
+                                  replacement = '<'+ tag +' style="background-color: yellow;color: black;">$&</'+ tag +'>';
+                              return this.html(function() {
+                                return $(this).text().replace(regex, replacement);
+                              });
+                            };
+                              $('P').wrapInTag({
+                              tag: 'strong',
+                              words: ['comput']
+                            });
                         }
                     </script>
                 </div>
