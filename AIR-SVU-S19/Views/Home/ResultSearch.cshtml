@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-    <title>AIR Homework SVU-S19 | Yazan - Hamid - Tareq</title>
+    <title>AIR Homework SVU-S19 |  Yazan - Hamid - Tareq</title>
     <meta charset="UTF-8">
     <meta name="description" content="AIR Homework SVU-S19 | Yazan - Hamid - Tareq">
     <meta name="keywords" content="industry, html">
@@ -63,7 +63,7 @@
                     </div>
                     <div class="hib-text">
                         <h6>+546 990221 123</h6>
-                        <p>contact@industryalinc.com</p>
+                        <p>www.svuonline.org</p>
                     </div>
                 </div>
                 <div class="header-info-box">
@@ -72,7 +72,7 @@
                     </div>
                     <div class="hib-text">
                         <h6>Main Str, no 23</h6>
-                        <p>NY, New York PK 23589</p>
+                        <p>SY, Damascus 23589</p>
                     </div>
                 </div>
                 <button class="search-switch"><i class="fa fa-search"></i></button>
@@ -97,8 +97,7 @@
         </div>
     </header>
     <!-- Header section end  -->
-    @*class="row justify-content-center"  for center content *@
-    <div style="background:#ffffff;padding-top:100px;margin-bottom:300px; height:1000px">
+    <div style="background:#ffffff ;width:100%;padding-top:100px;margin-bottom:300px; height:1000px">
         @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
         {
             @Html.AntiForgeryToken()
@@ -125,69 +124,71 @@
                     <div class="container" style="width:15%">
                         <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="بحث" class="btn btn-success form-control " />
                     </div>
-                    <hr />
-                    <div style="margin-left:0px;margin-right:0px" class="row container justify-content-center">
-                        <div style="max-width: 100%;" class="col-md-6">
-                            <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">Search Result :</label><hr />
-                            @if (Model.Count() == 0)
-                            {
-                                <h4 style="color:deepskyblue">Records not found</h4>
-                            }
-                            else
-                            {<table class="table table-bordered">
-                                    <tr>
-                                        <th>File</th>
-                                        <th>Rank</th>
-                                    </tr>
-                                    @foreach (var result in Model)
-                                    {
-                                        <tr>
-                                            <td onclick="contentFile('hamid')">
-                                                <span class="dot"></span>
-                                                <a href="#">@Server.MapPath("/").Substring(20)Files\@result.File_Name</a><br />
-                                                <h5 style="color:darkgray;display: inline;">File Name:</h5>
-                                                <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
-                                                <br />
-                                                <p id="Paragraph">@result.File_content.Substring(0, 25)</p>
-                                                <input type="button" value="Assign" onclick="AssignButtonClicked(this)"
-                                                       data-assigned-id="@result.File_content" />
-                                            </td>
-                                            <td>
-                                            </td>
-                                        </tr>
-                                    }
-                                </table>
-                            }
-                        </div>
-                            <div id="bodydesc" style="max-width: 100%;" class="col-md-6">
-                                <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">File's Content:</label><hr />
-                                <p id="desc" style="overflow-y: scroll;height:600px; align-content:center">
-                                    //Here is my large content with images...
-                                </p>
-                            </div>
-                        </div>
-                    <script>
-                        function AssignButtonClicked(elem) {
-                            var contentFile = $(elem).data('assigned-id');
-                            document.getElementById("desc").textContent = contentFile;
-                            $.fn.wrapInTag = function(opts) {
-                              var tag = opts.tag || 'strong',
-                                  words = opts.words || [],
-                                  regex = RegExp(words.join('|'), 'gi'),
-                                  replacement = '<'+ tag +' style="background-color: yellow;color: black;">$&</'+ tag +'>';
-                              return this.html(function() {
-                                return $(this).text().replace(regex, replacement);
-                              });
-                            };
-                              $('P').wrapInTag({
-                              tag: 'strong',
-                              words: ['comput']
-                            });
-                        }
-                    </script>
                 </div>
-            </div>
+                <hr />
 
+                <script>
+                    function AssignButtonClicked(elem) {
+                        var contentFile = $(elem).data('assigned-id');
+                        document.getElementById("desc").textContent = contentFile;
+                        $.fn.wrapInTag = function (opts) {
+                            var tag = opts.tag || 'strong',
+                                words = opts.words || [],
+                                regex = RegExp(words.join('|'), 'gi'),
+                                replacement = '<' + tag + ' style="background-color: yellow;color: black;">$&</' + tag + '>';
+                            return this.html(function () {
+                                return $(this).text().replace(regex, replacement);
+                            });
+                        };
+                        $('P').wrapInTag({
+                            tag: 'strong',
+                            words: ['comput']
+                        });
+                    }
+                </script>
+            </div>
+ 
+                <div style="width:50%;margin-left:10px ;float:left;">
+                    <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">Search Result :</label><hr />
+                    @if (Model.Count() == 0)
+                    {
+                        <h4 style="color:deepskyblue">Records not found</h4>
+                    }
+                    else
+                    {
+                <div>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>File</th>
+                            <th>Rank</th>
+                        </tr>
+                        @foreach (var result in Model)
+                        {
+                            <tr>
+                                <td onclick="contentFile('hamid')">
+                                    <span class="dot"></span>
+                                    <a href="#">@Server.MapPath("/").Substring(20)Files\@result.File_Name</a><br />
+                                    <h5 style="color:darkgray;display: inline;">File Name:</h5>
+                                    <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
+                                    <br />
+                                    <p id="Paragraph">@result.File_content.Substring(50, 150)</p>
+                                    <input type="button" class="btn btn-info" value="استعراض الملف" onclick="AssignButtonClicked(this)"
+                                           data-assigned-id="@result.File_content" />
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                    }
+                </div>
+                <div id="bodydesc" style="width:50%;margin-left:10px ;float:left;" >
+                    <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">File's Content:</label><hr />
+                    <p id="desc" style="overflow-y: scroll;height:600px;border-style:double; text-align:center">
+                        //Here is my large content with images...
+                    </p>
+                </div>
         }
     </div>
     <style>

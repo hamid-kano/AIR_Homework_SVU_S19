@@ -96,61 +96,90 @@
 
     </header>
     <!-- Header section end  -->
-    <div style="background:#ffffff;padding-top:100px;height:1000px">
-
-        <div class="row">
-            <div class="container center-block">
-                <ul class="nav nav-tabs reserch-tab-menu " style="width:25%" role="tablist">
-                    <li class="nav-item text-center">
-                        <a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Oil & Lubricants</a>
-                    </li>
-                    <li class="nav-item text-center">
-                        <a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Engeneering</a>
-                    </li>
-                    <li class="nav-item text-center">
-                        <a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Green Energy</a>
-                    </li>
-                </ul>
-
+    <div id="page-container" style="background:#ffffff;padding-top:25px;height:1000px">
+        <br />
+        <h1 style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;">اعداد الطلاب</h1>
+        <br />
+        <div class="row  justify-content-center">
+            <div class="col-md-2">
+                <h5 style="text-align:center ;margin-bottom:5px">ID : <b>Yazan_112868</b></h5>
+                <h6 style="font-family:Al-Jazeera-Arabic;text-align:center ;color:#2196f3">يزن يزن يزن</h6>
+            </div>
+            <div class="col-md-2">
+                <h5 style="text-align:center ;margin-bottom:5px">ID : <b>Tarek_109843</b></h5>
+                <h6 style="font-family:Al-Jazeera-Arabic ;text-align:center ;color:#2196f3">طارق طارق طارق</h6>
+            </div>
+            <div class="col-md-2">
+                <h5 style="text-align:center ;margin-bottom:5px">ID : <b>Hamid_109490</b></h5>
+                <h6 style="font-family:Al-Jazeera-Arabic ;text-align:center ;color:#2196f3">حميد كنو عبيد</h6>
             </div>
         </div>
-        <div>
-            <form id="uploader" class="col-md-offset-2 col-md-4">
-                <input id="fileInput" type="file" multiple class="form-control">
-                <br />
-                <input type="submit" value="Upload file" class="form-control" />
-            </form>
-
-            <hr />
+        <br />
+        <hr />
+        <br />
+        <div id="content-wrap">
+            <h1 style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;color:#ffc000">صفحة الاعــدادات</h1>
             @using (Html.BeginForm("Mainpulation_Text", "Home", FormMethod.Post))
             {
-                @Html.AntiForgeryToken()
-
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <div class="col-md-offset-2 col-md-4">
-                            @Html.DropDownList("Lang", new SelectList(
-new List<SelectListItem>
-{
-                                new SelectListItem {Text = "العربية", Value = "arabic"},
-                                new SelectListItem {Text = "English", Value = "english"},
-}, "Value", "Text"), new { @class = "form-control" })
-                            <hr />
-
-                            @Html.DropDownList("Algorithm", new SelectList(
-new List<SelectListItem>
-{
-                                new SelectListItem {Text = "ISRI", Value = "arabic"},
-                                new SelectListItem {Text = "Porter", Value = "english"},
-}, "Value", "Text"), new { @class = "form-control" })
-                            <br />
-                            <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="معالجة النصوص" class="btn btn-success form-control " />
-                        </div>
+                <br />
+                <div class="row justify-content-center">
+                    <div class="col-md-offset-2 col-md-4">
+                        <label for="fileInput" class="custom-file-upload">
+                            <i class="fa fa-cloud-upload"></i> Select Files For Upload
+                        </label>
+                        <input id="fileInput" multiple type="file" />
+                        <input id="uploader" type="button" value="Upload file" class="form-control" />
+                        <br />
+                        @Html.DropDownList("Lang", new SelectList(
+            new List<SelectListItem>
+            {
+                new SelectListItem {Text = "العربية", Value = "arabic"},
+                new SelectListItem {Text = "English", Value = "english"},
+            }, "Value", "Text"), new { @class = "form-control" })
+                        <br />
+                        @Html.DropDownList("Algorithm", new SelectList(
+            new List<SelectListItem>
+            {
+                            new SelectListItem {Text = "ISRI", Value = "arabic"},
+                            new SelectListItem {Text = "Porter", Value = "english"},
+            }, "Value", "Text"), new { @class = "form-control" })
+                        <br />
+                        <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="فهرسة الملفات المرفوعة" class="btn btn-success form-control " />
                     </div>
                 </div>
             }
         </div>
+        <br />
+        <a href="Relevant_Docs"> <h1 style="font-family:Al-Jazeera-Arabic;font-size:30px ;text-align:center;color:#ffc000"><<< الانتقال الى صفحة البحث</h1></a>
+
     </div>
+    <style>
+        input[type="file"] {
+                display: none;
+            }
+            .custom-file-upload {
+                border: 1px solid #ccc;
+                display: inline-block;
+                padding: 6px 12px;
+                cursor: pointer;
+            }
+
+                  #page-container {
+                  position: relative;
+                  min-height: 100vh;
+                }
+
+                #content-wrap {
+                  padding-bottom: 2.5rem;    /* Footer height */
+                }
+
+                #footer {
+                  position: absolute;
+                  bottom: 0;
+                  width: 100%;
+                  height: 2.5rem;            /* Footer height */
+                }
+    </style>
     <!-- Call to action section  -->
     <section class="cta-section ">
         <div class="container">
@@ -185,7 +214,7 @@ new List<SelectListItem>
     <script src="~/js/main.js"></script>
     <script src="~/js/owl.carousel.min.js"></script>
     <script>
-        document.getElementById('uploader').onsubmit = function () {
+        document.getElementById('uploader').onclick = function () {
             var formdata = new FormData(); //FormData object
             var fileInput = document.getElementById('fileInput');
             //Iterating through each files selected in fileInput
@@ -228,4 +257,4 @@ new List<SelectListItem>
 
 </body>
 
-</html >
+</html>

@@ -13,7 +13,7 @@ namespace AIR_SVU_S19
         // If you wish to target a different database and/or database provider, modify the 'AIR_SVU_S19' 
         // connection string in the application configuration file.
         public AIR_SVU_S19_Model()
-            : base(@"data source=(LocalDb)\MSSQLLocalDB;initial catalog=AIR_SVU_S19.AIR-SVU-S19;integrated security=True;MultipleActiveResultSets=true")
+            : base(@"data source=(LocalDb)\MSSQLLocalDB;initial catalog=AIR_SVU_S19.AIR-SVU-S19;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework")
         {
         }
 
