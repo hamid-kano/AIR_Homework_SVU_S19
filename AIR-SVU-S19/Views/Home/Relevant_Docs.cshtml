@@ -36,17 +36,7 @@
     </div>
     <!-- Header section  -->
     <header class="header-section clearfix">
-        <div class="header-top">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    </div>
-                    <div class="col-md-6 text-md-right">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    </div>
-                </div>
-            </div>
+        <div style="width:100%;background-color:black;height:5px">
         </div>
 
         <div class="site-navbar">
@@ -60,8 +50,8 @@
                         <img src="~/img/icons/phone.png" alt="" class="" />
                     </div>
                     <div class="hib-text">
-                        <h6>+546 990221 123</h6>
-                        <p>contact@industryalinc.com</p>
+                        <h6>+963 11 2113469</h6>
+                        <p>www.svuonline.org</p>
                     </div>
                 </div>
                 <div class="header-info-box">
@@ -70,7 +60,7 @@
                     </div>
                     <div class="hib-text">
                         <h6>Main Str, no 23</h6>
-                        <p>NY, New York PK 23589</p>
+                        <p>SY, Damascus 23589</p>
                     </div>
                 </div>
                 <button class="search-switch"><i class="fa fa-search"></i></button>
@@ -79,72 +69,121 @@
             <nav class="site-nav-menu">
                 <ul>
                     <li class="active"><a href="index">Home</a></li>
-                    <li><a href="about.html">About us</a></li>
+                    <li><a href="#">About us</a></li>
                     <li>
-                        <a href="solutions.html">Solutions</a>
+                        <a href="#">Solutions</a>
                         <ul class="sub-menu">
-                            <li><a href="elements.html">Elements</a></li>
+                            <li><a href="#">Elements</a></li>
                         </ul>
                     </li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
                 </ul>
             </nav>
         </div>
         <div style="background:#2196f3; height:6px">
         </div>
+        <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,700" rel="stylesheet" />
+        <link href="~/css/main.css" rel="stylesheet" />
     </header>
     <!-- Header section end  -->
     @*class="row justify-content-center"  for center content *@
-    <div style="background:#ffffff;padding-top:100px;margin-bottom:300px; height:1000px">
-
-        @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
-        {
-            @Html.AntiForgeryToken()
-
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <div class="container justify-content-center row">
-                        <div class="col-md-auto">
-                            <label style="font-family:Al-Jazeera-Arabic;font-size:large" class="col-form-label-sm">Key Search :</label> 
-                        </div>
-                        <div class="col-md-3 ">
-                            @Html.Editor("TxT_Search_Key", "This is value", new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                        <div class="col-md-3 ">
-                            @Html.DropDownList("AlgorithmRetrieve", new SelectList(
-                     new List<SelectListItem>
-                     {
-                                    new SelectListItem {Text = "Boolean Model", Value = "boolean"},
-                                    new SelectListItem {Text = "Extend Boolean Model", Value = "ex_boolean"},
-                                     new SelectListItem {Text = "Vector Space model", Value = "vector_space"},
-                     }, "Value", "Text"), new { @class = "form-control", @id = "AlgorithmRetrieve" })
+<div style="background:#ffffff;padding-top:100px;margin-bottom:300px; height:1000px">
+    <h1 style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;color:#ffc000">صفحة البحث</h1>
+    <br />
+    <hr />
+    <div class="s013">
+        <form>
+            <fieldset>
+                <legend>QUICK FIND YOUR CITY</legend>
+            </fieldset>
+            <div class="inner-form">
+                <div class="left">
+                    <div class="input-wrap first">
+                        <div class="input-field first">
+                            <label>كلمة البحث</label>
+                            <input type="text" placeholder="اكتب هنا ماتريد البحث عنه " />
                         </div>
                     </div>
-                    <br />
-                    <div class="container" style="width:15%">
-                        <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="بحث" class="btn btn-success form-control " />
+                    <div class="input-wrap second">
+                        <div class="input-field second">
+                            <label>WHERE</label>
+                            <div class="input-select">
+                                <select data-trigger="" name="choices-single-defaul">
+                                    <option placeholder="">1 adult</option>
+                                    <option>2 adults</option>
+                                    <option>3 adults</option>
+                                    <option>4 adults</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <button class="btn-search" type="button">SEARCH</button>
             </div>
-        }
-        <br />
-        <br />
+        </form>
     </div>
-    <!-- Call to action section  -->
-    <section class="cta-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-9 d-flex align-items-center">
-                    <h2>We produce or supply Goods, Services, or Sources</h2>
+    <script src="~/js/extention/choices.js"></script>
+    <script>
+        const choices = new Choices('[data-trigger]',
+            {
+                searchEnabled: false,
+                itemSelectText: '',
+            });
+
+    </script>
+    <hr />
+    <br />
+    @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="container justify-content-center row">
+                    <div class="col-md-3 ">
+
+
+                        @Html.Editor("TxT_Search_Key", "This is value", new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-3 ">
+                        @Html.DropDownList("AlgorithmRetrieve", new SelectList(
+                 new List<SelectListItem>
+                 {
+                                new SelectListItem {Text = "Boolean Model", Value = "boolean"},
+                                new SelectListItem {Text = "Extend Boolean Model", Value = "ex_boolean"},
+                                 new SelectListItem {Text = "Vector Space model", Value = "vector_space"},
+                 }, "Value", "Text"), new { @class = "form-control", @id = "AlgorithmRetrieve" })
+                    </div>
                 </div>
-                <div class="col-lg-3 text-lg-right">
-                    <a href="#" class="site-btn sb-dark">contact us</a>
+                <br />
+                <div class="container" style="width:15%">
+                    <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="بحث" class="btn btn-success form-control " />
                 </div>
             </div>
         </div>
-    </section>
-    <!-- Call to action section end  -->
+    }
+    <br />
+    <br />
+</div>
+    <!-- footer Section -->
+    <div class="footer">
+        <h5 style="text-align:center ;color:black;display: inline"><b>Yazan_112868</b></h5>
+        <h5 style="text-align:center ;color:black;margin:0 25px 0 25px;display: inline"><b>Tarek_109843</b></h5>
+        <h5 style="text-align:center ;color:black;display: inline"><b>Hamid_109490</b></h5>
+    </div>
+    <div class="footer" style="bottom:0;background-color:#ffc000;height:5px;"></div>
+    <style>
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 9px;
+            width: 100%;
+            color: white;
+            text-align: center;
+        }
+    </style>
+    <!-- end footer Section -->
     <!-- Search model -->
     <div class="search-model">
         <div class="h-100 d-flex align-items-center justify-content-center">

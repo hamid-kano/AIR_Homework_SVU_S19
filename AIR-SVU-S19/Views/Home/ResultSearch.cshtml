@@ -38,17 +38,7 @@
     </div>
     <!-- Header section  -->
     <header class="header-section clearfix">
-        <div class="header-top">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    </div>
-                    <div class="col-md-6 text-md-right">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    </div>
-                </div>
-            </div>
+        <div style="width:100%;background-color:black;height:5px">
         </div>
 
         <div class="site-navbar">
@@ -62,7 +52,7 @@
                         <img src="~/img/icons/phone.png" alt="" class="" />
                     </div>
                     <div class="hib-text">
-                        <h6>+546 990221 123</h6>
+                        <h6>+963 11 2113469</h6>
                         <p>www.svuonline.org</p>
                     </div>
                 </div>
@@ -81,15 +71,15 @@
             <nav class="site-nav-menu">
                 <ul>
                     <li class="active"><a href="index">Home</a></li>
-                    <li><a href="about.html">About us</a></li>
+                    <li><a href="#">About us</a></li>
                     <li>
-                        <a href="solutions.html">Solutions</a>
+                        <a href="#">Solutions</a>
                         <ul class="sub-menu">
-                            <li><a href="elements.html">Elements</a></li>
+                            <li><a href="#">Elements</a></li>
                         </ul>
                     </li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
                 </ul>
             </nav>
         </div>
@@ -97,6 +87,7 @@
         </div>
     </header>
     <!-- Header section end  -->
+
     <div style="background:#ffffff ;width:100%;padding-top:100px;margin-bottom:300px; height:1000px">
         @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
         {
@@ -147,48 +138,48 @@
                     }
                 </script>
             </div>
- 
-                <div style="width:50%;margin-left:10px ;float:left;">
-                    <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">Search Result :</label><hr />
-                    @if (Model.Count() == 0)
-                    {
-                        <h4 style="color:deepskyblue">Records not found</h4>
-                    }
-                    else
-                    {
-                <div>
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>File</th>
-                            <th>Rank</th>
-                        </tr>
-                        @foreach (var result in Model)
-                        {
+
+            <div style="width:50%;margin-left:10px ;float:left;">
+                <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">Search Result :</label><hr />
+                @if (Model.Count() == 0)
+                {
+                    <h4 style="color:deepskyblue">Records not found</h4>
+                }
+                else
+                {
+                    <div>
+                        <table class="table table-bordered">
                             <tr>
-                                <td onclick="contentFile('hamid')">
-                                    <span class="dot"></span>
-                                    <a href="#">@Server.MapPath("/").Substring(20)Files\@result.File_Name</a><br />
-                                    <h5 style="color:darkgray;display: inline;">File Name:</h5>
-                                    <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
-                                    <br />
-                                    <p id="Paragraph">@result.File_content.Substring(50, 150)</p>
-                                    <input type="button" class="btn btn-info" value="استعراض الملف" onclick="AssignButtonClicked(this)"
-                                           data-assigned-id="@result.File_content" />
-                                </td>
-                                <td>
-                                </td>
+                                <th>File</th>
+                                <th>Rank</th>
                             </tr>
-                        }
-                    </table>
-                </div>
-                    }
-                </div>
-                <div id="bodydesc" style="width:50%;margin-left:10px ;float:left;" >
-                    <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">File's Content:</label><hr />
-                    <p id="desc" style="overflow-y: scroll;height:600px;border-style:double; text-align:center">
-                        //Here is my large content with images...
-                    </p>
-                </div>
+                            @foreach (var result in Model)
+                            {
+                                <tr>
+                                    <td onclick="contentFile('hamid')">
+                                        <span class="dot"></span>
+                                        <a href="#">@Server.MapPath("/").Substring(20)Files\@result.File_Name</a><br />
+                                        <h5 style="color:darkgray;display: inline;">File Name:</h5>
+                                        <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
+                                        <br />
+                                        <p id="Paragraph">@result.File_content.Substring(50, 150)</p>
+                                        <input type="button" class="btn btn-info" value="استعراض الملف" onclick="AssignButtonClicked(this)"
+                                               data-assigned-id="@result.File_content" />
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                }
+            </div>
+            <div id="bodydesc" style="width:50%;margin-left:10px ;float:left;">
+                <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">File's Content:</label><hr />
+                <p id="desc" style="overflow-y: scroll;height:600px;border-style:double; text-align:center">
+                    //Here is my large content with images...
+                </p>
+            </div>
         }
     </div>
     <style>
@@ -200,19 +191,24 @@
             display: inline-block;
         }
     </style>
-    <!-- Call to action section  -->
-    <section class="cta-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-9 d-flex align-items-center">
-                    <h2>We produce or supply Goods, Services, or Sources</h2>
-                </div>
-                <div class="col-lg-3 text-lg-right">
-                    <a href="#" class="site-btn sb-dark">contact us</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- footer Section -->
+    <div class="footer">
+        <h5 style="text-align:center ;color:black;display: inline"><b>Yazan_112868</b></h5>
+        <h5 style="text-align:center ;color:black;margin:0 25px 0 25px;display: inline"><b>Tarek_109843</b></h5>
+        <h5 style="text-align:center ;color:black;display: inline"><b>Hamid_109490</b></h5>
+    </div>
+    <div class="footer" style="bottom:0;background-color:#ffc000;height:5px;"></div>
+    <style>
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 9px;
+            width: 100%;
+            color: white;
+            text-align: center;
+        }
+    </style>
+    <!-- end footer Section -->
     <!-- Call to action section end  -->
     <!-- Search model -->
     <div class="search-model">
