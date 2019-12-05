@@ -210,7 +210,7 @@
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\font-awesome.min.css" />
     <Content Include="css\magnific-popup.css" />
-    <Content Include="css\main.css" />
+    <Content Include="css\main_SearchBox.css" />
     <Content Include="css\owl.carousel.min.css" />
     <Content Include="css\slicknav.min.css" />
     <Content Include="css\style.css" />
@@ -267,15 +267,11 @@
     <Content Include="img\testimonial-thumb.jpg" />
     <Content Include="img\video-box.jpg" />
     <Content Include="js\bootstrap.min.js" />
+    <Content Include="js\choices.js" />
     <Content Include="js\circle-progress.min.js" />
-    <Content Include="js\extention\choices.js" />
-    <Content Include="js\extention\custom-materialize.js" />
-    <Content Include="js\extention\flatpickr.js" />
     <Content Include="js\jquery-3.2.1.min.js" />
     <Content Include="js\jquery.magnific-popup.min.js" />
     <Content Include="js\jquery.slicknav.min.js" />
-    <Content Include="js\main.js" />
-    <Content Include="js\main2.js" />
     <Content Include="js\owl.carousel.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

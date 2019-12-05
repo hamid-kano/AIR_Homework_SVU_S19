@@ -32,15 +32,10 @@
     <link href="~/css/style.css" rel="stylesheet" />
 </head>
 <body>
-    <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
     <!-- Header section  -->
     <header class="header-section clearfix">
         <div style="width:100%;background-color:black;height:5px">
         </div>
-
         <div class="site-navbar">
             <!-- Logo -->
             <a href="index" class="site-logo">
@@ -104,12 +99,12 @@
                         </div>
                         <div class="col-md-3 ">
                             @Html.DropDownList("AlgorithmRetrieve", new SelectList(
-                     new List<SelectListItem>
-                     {
-                                    new SelectListItem {Text = "Boolean Model", Value = "boolean"},
-                                    new SelectListItem {Text = "Extend Boolean Model", Value = "ex_boolean"},
-                                     new SelectListItem {Text = "Vector Space model", Value = "vector_space"},
-                     }, "Value", "Text"), new { @class = "form-control", @id = "AlgorithmRetrieve" })
+                         new List<SelectListItem>
+                         {
+                                        new SelectListItem {Text = "Boolean Model", Value = "boolean"},
+                                        new SelectListItem {Text = "Extend Boolean Model", Value = "ex_boolean"},
+                                         new SelectListItem {Text = "Vector Space model", Value = "vector_space"},
+                         }, "Value", "Text"), new { @class = "form-control", @id = "AlgorithmRetrieve" })
                         </div>
                     </div>
                     <div class="container" style="width:15%">

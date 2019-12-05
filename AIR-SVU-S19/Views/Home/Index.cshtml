@@ -29,10 +29,6 @@
     <link href="~/css/style.css" rel="stylesheet" />
 </head>
 <body>
-    <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
     <!-- Header section  -->
     <header class="header-section clearfix">
         <div style="width:100%;background-color:black;height:5px">
@@ -80,39 +76,42 @@
                 </ul>
             </nav>
         </div>
-        <div style="background:#2196f3; height:6px">
+        <div style="background:#fa4251; height:6px">
         </div>
     </header>
     <!-- Header section end  -->
-    <div id="page-container" style="background:#ffffff;padding-top:25px;height:1000px">
+    <div id="page-container" style="background:#ffffff;padding-top:25px;height:1000px;background-color:#2196f3">
         <br />
         <h1 style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;">اعداد الطلاب</h1>
         <br />
         <div class="row  justify-content-center">
             <div class="col-md-2">
-                <h5 style="text-align:center ;margin-bottom:5px">ID : <b>Yazan_112868</b></h5>
-                <h6 style="font-family:Al-Jazeera-Arabic;text-align:center ;color:#2196f3">يزن بهجت اسود</h6>
+                <h5 style="text-align:center ;margin-bottom:5px ;">ID : <b>Yazan_112868</b></h5>
+                <h6 style="font-family:Al-Jazeera-Arabic;text-align:center ;color:black">يزن بهجت اسود</h6>
             </div>
             <div class="col-md-2">
                 <h5 style="text-align:center ;margin-bottom:5px">ID : <b>Tarek_109843</b></h5>
-                <h6 style="font-family:Al-Jazeera-Arabic ;text-align:center ;color:#2196f3">طارق علي الخليلي</h6>
+                <h6 style="font-family:Al-Jazeera-Arabic ;text-align:center ;color:black">طارق علي الخليلي</h6>
             </div>
             <div class="col-md-2">
                 <h5 style="text-align:center ;margin-bottom:5px">ID : <b>Hamid_109490</b></h5>
-                <h6 style="font-family:Al-Jazeera-Arabic ;text-align:center ;color:#2196f3">حميد كنو عبيد</h6>
+                <h6 style="font-family:Al-Jazeera-Arabic ;text-align:center ;color:black">حميد كنو عبيد</h6>
             </div>
         </div>
-        <br />
         <hr />
         <br />
         <div id="content-wrap">
-            <h1 style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;color:#ffc000">صفحة الاعــدادات</h1>
+            <h1 style="        font-family: Al-Jazeera-Arabic;
+        font-size: 40px;
+        text-align: center;
+        text-decoration-line: underline;
+        color: #ffc000">صفحة الاعــدادات</h1>
             @using (Html.BeginForm("Mainpulation_Text", "Home", FormMethod.Post))
             {
                 <br />
                 <div class="row justify-content-center">
                     <div class="col-md-offset-2 col-md-4">
-                        <label for="fileInput" class="custom-file-upload">
+                        <label for="fileInput" class="custom-file-upload" style="background-color:white">
                             <i class="fa fa-cloud-upload"></i> Select Files For Upload
                         </label>
                         <input id="fileInput" multiple type="file" />

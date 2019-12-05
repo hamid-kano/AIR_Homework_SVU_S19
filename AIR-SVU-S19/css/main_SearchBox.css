@@ -910,7 +910,7 @@ legend {
 
 .s013 form .inner-form .input-wrap {
   background: #fff;
-  height: 80px;
+  height: 100px;
   position: relative;
   padding: 20px 25px 20px 25px;
 }
@@ -1071,7 +1071,7 @@ legend {
   cursor: pointer;
   font-weight: 400;
   font-family: 'Poppins', sans-serif;
-  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .s013 form .btn-search:hover {

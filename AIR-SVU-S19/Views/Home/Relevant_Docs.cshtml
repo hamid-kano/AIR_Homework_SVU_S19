@@ -31,14 +31,10 @@
 </head>
 <body>
     <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
     <!-- Header section  -->
     <header class="header-section clearfix">
         <div style="width:100%;background-color:black;height:5px">
         </div>
-
         <div class="site-navbar">
             <!-- Logo -->
             <a href="index" class="site-logo">
@@ -81,49 +77,49 @@
                 </ul>
             </nav>
         </div>
-        <div style="background:#2196f3; height:6px">
+        <div style="background:#fa4251; height:6px">
         </div>
-        <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,700" rel="stylesheet" />
-        <link href="~/css/main.css" rel="stylesheet" />
+
     </header>
     <!-- Header section end  -->
     @*class="row justify-content-center"  for center content *@
-<div style="background:#ffffff;padding-top:100px;margin-bottom:300px; height:1000px">
-    <h1 style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;color:#ffc000">صفحة البحث</h1>
-    <br />
-    <hr />
-    <div class="s013">
-        <form>
-            <fieldset>
-                <legend>QUICK FIND YOUR CITY</legend>
-            </fieldset>
-            <div class="inner-form">
-                <div class="left">
-                    <div class="input-wrap first">
-                        <div class="input-field first">
-                            <label>كلمة البحث</label>
-                            <input type="text" placeholder="اكتب هنا ماتريد البحث عنه " />
+<div style="background:#ffffff;margin-bottom:100px; height:1000px">
+    <link href="~/css/main_SearchBox.css" rel="stylesheet" />
+    <div class="s013" style="background-color:#2196f3">
+        @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
+        {
+
+            <form>
+                <fieldset>
+                    <legend style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;color:#ffc000; margin-right: 10px;">صفحة البحث</legend>
+                </fieldset>
+                <div class="inner-form">
+                    <div class="left">
+                        <button class="btn-search" type="submit" style="font-family:Al-Jazeera-Arabic;font-size:30px ;height: 100px;text-align:center;">بحث</button>
+                        <div class="input-wrap first" style="height: 100px">
+                            <div class="input-field first">
+                                <label style="text-align:right;font:bold;font-family:Al-Jazeera-Arabic;margin-bottom:4px;font-size:14px">ماذا ؟</label>
+                                <input style="text-align:right;font:bold;font-family:Al-Jazeera-Arabic;" name="TxT_Search_Key" type="text" placeholder=". . . . تريد البحث عنه" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-wrap second">
-                        <div class="input-field second">
-                            <label>WHERE</label>
-                            <div class="input-select">
-                                <select data-trigger="" name="choices-single-defaul">
-                                    <option placeholder="">1 adult</option>
-                                    <option>2 adults</option>
-                                    <option>3 adults</option>
-                                    <option>4 adults</option>
-                                </select>
+                        <div class="input-wrap second" style="height: 100px">
+                            <div class="input-field second">
+                                <label style="text-align:right;margin-bottom:2px;font:bold;font-family:Al-Jazeera-Arabic;font-size:14px">: نموذج البحث</label>
+                                <div class="input-select">
+                                    <select data-trigger="" name="AlgorithmRetrieve">
+                                        <option Value = "boolean">Boolean Model</option>
+                                        <option Value = "ex_boolean">Extend Boolean Model</option>
+                                        <option Value = "vector_space">Vector Space model</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button class="btn-search" type="button">SEARCH</button>
-            </div>
-        </form>
-    </div>
-    <script src="~/js/extention/choices.js"></script>
+            </form>
+        }
+        </div>
+    <script src="~/js/choices.js"></script>
     <script>
         const choices = new Choices('[data-trigger]',
             {
@@ -143,7 +139,7 @@
                 <div class="container justify-content-center row">
                     <div class="col-md-3 ">
 
-
+                        
                         @Html.Editor("TxT_Search_Key", "This is value", new { htmlAttributes = new { @class = "form-control" } })
                     </div>
                     <div class="col-md-3 ">
