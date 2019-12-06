@@ -1,7 +1,10 @@
-﻿@model IEnumerable<AIR_SVU_S19.Models.Files>
+﻿@model IPagedList<AIR_SVU_S19.Models.Files>
 @{
     Layout = null;
 }
+@using PagedList.Mvc;
+@using PagedList;
+
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -144,11 +147,11 @@
                     });
                 };
                 alert(document.getElementsByName("TxT_Search_Key").text);
-                     $('P').wrapInTag({
+                $('P').wrapInTag({
                     tag: 'strong',
-                    words: ['comput','المعلومات']
+                    words: ['comput', 'المعلومات']
                 });
-               
+
             }
         </script>
         @if (Model.Count() == 0)
@@ -159,57 +162,66 @@
         `  @if (Model.Count() != 0)
         {
 
-            <div style="width:50%;float:left;">
-                <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">Search Result :</label><hr />
-                <div>
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>File</th>
-                            <th>Rank</th>
-                        </tr>
-                        @foreach (var result in Model)
-                        {
-                            <tr>
-                                <td onclick="contentFile('hamid')">
-                                    <span class="dot"></span>
-                                    <a href="#">@Server.MapPath("/").Substring(20)Files\@result.File_Name</a><br />
-                                    <h5 style="color:darkgray;display: inline;">File Name:</h5>
-                                    <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
-                                    <br />
-                                    <p id="Paragraph">
-                                        @{
-                                            if (result.File_content.Length > 300)
-                                            {
-                                                @result.File_content.Substring(0, 200)
-                                            }
-                                            else if (result.File_content.Length > 150)
-                                            {
-                                                @result.File_content.Substring(0, 150)
-                                            }
-                                            else if (result.File_content.Length > 75)
-                                            {
-                                                @result.File_content.Substring(0, 75)
-                                            }
-                                            else if (result.File_content.Length > 25)
-                                            {
-                                                @result.File_content.Substring(0, 25)
-                                            }
-                                            else
-                                            {
-                                                @result.File_content
-                                            }
-                                        }
-                                    </p>
-                                    <input type="button" class="btn btn-info" value="استعراض الملف" onclick="AssignButtonClicked(this)"
-                                           data-assigned-id="@result.File_content" />
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                        }
-                    </table>
-                </div>
-            </div>
+    <div style="width:50%;float:left;">
+        <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">Search Result :</label><hr />
+        <div>
+            <table class="table table-bordered">
+                <tr>
+                    @*<th>@Html.DisplayFor(m=>m.First().File_Name)</th>
+                    <th>@Html.DisplayFor(m => m.First().File_ID)</th>*@
+                    <th style="font-family:Al-Jazeera-Arabic;font-size:large ;color:darkblue">اسم الملف</th>
+                    <th style="font-family:Al-Jazeera-Arabic;font-size:large ;color:darkblue">مرتبة الملف</th>
+                </tr>
+                @foreach (var result in Model)
+                {
+                    <tr>
+                        <td onclick="contentFile('hamid')">
+                            <span class="dot"></span>
+                            <a href="#">@Server.MapPath("/").Substring(20)Files\@result.File_Name</a><br />
+                            <h5 style="color:darkgray;display: inline;">File Name:</h5>
+                            <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
+                            <br />
+                            <p id="Paragraph">
+                                @{
+                                    if (result.File_content.Length > 300)
+                                    {
+                                        @result.File_content.Substring(0, 200)
+                                    }
+                                    else if (result.File_content.Length > 150)
+                                    {
+                                        @result.File_content.Substring(0, 150)
+                                    }
+                                    else if (result.File_content.Length > 75)
+                                    {
+                                        @result.File_content.Substring(0, 75)
+                                    }
+                                    else if (result.File_content.Length > 25)
+                                    {
+                                        @result.File_content.Substring(0, 25)
+                                    }
+                                    else
+                                    {
+                                        @result.File_content
+                                    }
+                                }
+                            </p>
+                            <input type="button" class="btn btn-outline-warning" value="استعراض الملف" onclick="AssignButtonClicked(this)"
+                                   data-assigned-id="@result.File_content" />
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <div style="font-size:xx-large;color:blue ;padding-left:45%;">  @Html.PagedListPager(Model, i => Url.Action("ResultSearch", "Home", new { i, AlgorithmRetrieve = Request.QueryString["AlgorithmRetrieve"], TxT_Search_Key = Request.QueryString["TxT_Search_Key"], @class = "PagerSearch" }))</div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+    </div>
 
             <div id="bodydesc" style="width:50%;float:left;">
                 <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">File's Content:</label><hr />

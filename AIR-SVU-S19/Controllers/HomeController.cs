@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Word = Microsoft.Office.Interop.Word;
+using PagedList.Mvc;
+using PagedList;
 
 namespace AIR_SVU_S19.Controllers
 {
@@ -35,7 +37,7 @@ namespace AIR_SVU_S19.Controllers
 
             return View();
         }
-        public ActionResult ResultSearch(string AlgorithmRetrieve, string TxT_Search_Key)
+        public ActionResult ResultSearch(string AlgorithmRetrieve, string TxT_Search_Key,int? i)
         {
             List<Files> fileR = new List<Files>();
             Dictionary<string, double> resutlFR;
@@ -57,7 +59,7 @@ namespace AIR_SVU_S19.Controllers
             {
                 fileR= BooleanModel (TxT_Search_Key);
             }
-            return View(fileR);
+            return View(fileR.ToList().ToPagedList(i ?? 1,3));
         }
         public JsonResult Upload()
         {
@@ -292,7 +294,7 @@ namespace AIR_SVU_S19.Controllers
                 {
                     if (listWordQuery[0] == "not")
                     {
-                        wordTemp = listWordQuery[i + 1];
+                        wordTemp = listWordQuery[1];
                         term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
                         if (term != null)
                         {
@@ -304,7 +306,7 @@ namespace AIR_SVU_S19.Controllers
                     }
                     else
                     {
-                        wordTemp = listWordQuery[i];
+                        wordTemp = listWordQuery[0];
                         term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
                         if (term != null)
                         {
@@ -316,20 +318,8 @@ namespace AIR_SVU_S19.Controllers
                 }
                 else
                 {
-                    if (listWordQuery[i] == "not")
-                    {
-                        wordTemp = listWordQuery[i + 1];
-                        term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
-                        if (term != null)
-                        {
-                            tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
-                            tempInt = Array.ConvertAll(tempStr, int.Parse);
-                            tempBool = tempInt.Select(b => b != 1).ToArray();
-                            result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
-                        }
-                        i++;
-                    }
-                    else if (listWordQuery[i] == "and")
+                   
+                    if (listWordQuery[i] == "and")
                     {
 
                         if (listWordQuery[i + 1] == "not")
@@ -389,7 +379,128 @@ namespace AIR_SVU_S19.Controllers
                             i++;
                         }
                     }
+                    else if (listWordQuery[i] == "not")
+                    {
+                        wordTemp = listWordQuery[i + 1];
+                        term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                        if (term != null)
+                        {
+                            tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                            tempInt = Array.ConvertAll(tempStr, int.Parse);
+                            tempBool = tempInt.Select(b => b != 1).ToArray();
+                            result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
+                        }
+                        i++;
+                    }
                 }
+
+
+                // Arabic Search او و دون
+
+                if (i == 0)
+                {
+                    if (listWordQuery[0] == "دون")
+                    {
+                        wordTemp = listWordQuery[1];
+                        term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                        if (term != null)
+                        {
+                            tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                            tempInt = Array.ConvertAll(tempStr, int.Parse);
+                            result = tempInt.Select(b => b != 1).ToArray();
+                        }
+                        i++;
+                    }
+                    else
+                    {
+                        wordTemp = listWordQuery[0];
+                        term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                        if (term != null)
+                        {
+                            tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                            tempInt = Array.ConvertAll(tempStr, int.Parse);
+                            result = tempInt.Select(b => b == 1).ToArray();
+                        }
+                    }
+                }
+                else
+                {
+
+                    if (listWordQuery[i] == "و")
+                    {
+
+                        if (listWordQuery[i + 1] == "دون")
+                        {
+                            wordTemp = listWordQuery[i + 2];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                tempBool = tempInt.Select(b => b != 1).ToArray();
+                                result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
+                            }
+                            i += 2;
+                        }
+                        else
+                        {
+                            wordTemp = listWordQuery[i + 1];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                tempBool = tempInt.Select(b => b == 1).ToArray();
+                                result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
+                            }
+                            i++;
+
+                        }
+                    }
+                    else if (listWordQuery[i] == "أو" || listWordQuery[i] == "او")
+                    {
+                        if (listWordQuery[i + 1] == "دون")
+                        {
+                            wordTemp = listWordQuery[i + 2];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                tempBool = tempInt.Select(b => b != 1).ToArray();
+                                result = result.Zip(tempBool, (d1, d2) => d1 || d2).ToArray();
+                            }
+                            i += 2;
+                        }
+                        else
+                        {
+                            wordTemp = listWordQuery[i + 1];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                tempBool = tempInt.Select(b => b == 1).ToArray();
+                                result = result.Zip(tempBool, (d1, d2) => d1 || d2).ToArray();
+                            }
+                            i++;
+                        }
+                    }
+                    else if (listWordQuery[i] == "دون")
+                    {
+                        wordTemp = listWordQuery[i + 1];
+                        term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                        if (term != null)
+                        {
+                            tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                            tempInt = Array.ConvertAll(tempStr, int.Parse);
+                            tempBool = tempInt.Select(b => b != 1).ToArray();
+                            result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
+                        }
+                        i++;
+                    }
+                }
+
             }
             for (int i = 0; i < result.Length; i++)
             {
