@@ -17,7 +17,7 @@ namespace AIR_SVU_S19.Controllers
         public static Dictionary<string, List<string>> documentCollection = new Dictionary<string, List<string>>();
         public static Dictionary<string, List<int>> termDocumentIncidenceMatrix = new Dictionary<string, List<int>>();
         public static HashSet<string> distinctTerm = new HashSet<string>();
-
+        char[] charsSplit = { ' ' };
         public ActionResult Index()
         {
             return View();
@@ -38,10 +38,11 @@ namespace AIR_SVU_S19.Controllers
         public ActionResult ResultSearch(string AlgorithmRetrieve, string TxT_Search_Key)
         {
             List<Files> fileR = new List<Files>();
-            Dictionary<string, double> resutlFR = VectorSpace(TxT_Search_Key);
-            var sortedDict = from file in resutlFR orderby file.Value descending select file;
+            Dictionary<string, double> resutlFR;
             if (AlgorithmRetrieve == "vector_space")
             {
+                resutlFR = VectorSpace(TxT_Search_Key);
+                var sortedDict = from file in resutlFR orderby file.Value descending select file;
                 foreach (var item in sortedDict)
                 {
                     if (item.Value>0)
@@ -53,7 +54,7 @@ namespace AIR_SVU_S19.Controllers
             else if (AlgorithmRetrieve == "ex_boolean")
             { }
             else
-            { }
+            { BooleanModel (TxT_Search_Key); }
             return View(fileR);
         }
         public JsonResult Upload()
@@ -67,7 +68,7 @@ namespace AIR_SVU_S19.Controllers
                 string mimeType = file.ContentType;
                 System.IO.Stream fileContent = file.InputStream;
                 //To save file, use SaveAs method
-                if (db.Files.Where(f=>f.File_Name.Equals(fileName)).SingleOrDefault()==null)
+                if (db.Files.Where(f=>f.File_Name.Equals(fileName)).FirstOrDefault()==null)
                 {
                 file.SaveAs(Server.MapPath("~/Files/") + fileName); //File will be saved in application root
                 Files _file = new Files();
@@ -93,7 +94,6 @@ namespace AIR_SVU_S19.Controllers
             string poureText="";
             IList<Files> Files_List = db.Files.ToList();
             bool insertNewDoc = false;
-            char[] charsSplit = { ' ' };
             foreach (var file in Files_List)
             {
                 if (file.File_content == null)
@@ -268,6 +268,46 @@ namespace AIR_SVU_S19.Controllers
         {
             Dictionary<string, double> FRVS = VectorSpaceModel.R_Docs_VS(QueryText);
             return FRVS;
+        }
+
+        public List<Files> BooleanModel(string QueryText)
+        {
+
+            string plainQuery = ReturnCleanASCII(QueryText);
+            plainQuery = Stopword_Arabic.RemoveStopwords(plainQuery);
+            plainQuery = Stopword_English.RemoveStopwords(plainQuery);
+            plainQuery = plainQuery.ToLower();
+            string [] listWordQuery =plainQuery.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+            bool[] result = new bool[db.Files.Count()];
+            string[] tempStr =new string[db.Files.Count()];
+            int[] tempInt = new int[db.Files.Count()];
+            bool[] tempBool = new bool[db.Files.Count()];
+            string wordTemp = "";
+            OrderTerms_DocsBoolean term = new OrderTerms_DocsBoolean();
+            for (int i = 1; i < listWordQuery.Length; i++)
+            {
+                wordTemp = listWordQuery[0];
+                result =
+                if (!listWordQuery.ElementAt(i).Equals("not"))
+                {
+
+                }
+                else
+                {
+                    wordTemp = listWordQuery[i + 1];
+                    term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                    if (term != null)
+                    {
+                        tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                        tempInt = Array.ConvertAll(tempStr, int.Parse);
+                        tempBool = tempInt.Select(b=>b!=1).ToArray();
+                        //tempBool = tempBool.Select(b=>!b.Equals(true)).ToArray();
+                        result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
+                    }
+                }
+            }
+            
+            return null;
         }
         public string ReturnCleanASCII(string s)
         {

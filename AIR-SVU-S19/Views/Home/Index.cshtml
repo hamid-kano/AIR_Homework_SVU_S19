@@ -36,7 +36,7 @@
 
         <div class="site-navbar">
             <!-- Logo -->
-            <a href="index" class="site-logo">
+            <a href="~/Home/index" class="site-logo">
                 <img src="~/img/logo.png" alt="" />
             </a>
             <div class="header-right">
@@ -115,8 +115,8 @@
                             <i class="fa fa-cloud-upload"></i> Select Files For Upload
                         </label>
                         <input id="fileInput" multiple type="file" />
-                        <input id="uploader" type="button" value="Upload file" class="form-control" />
-                        <br />
+                        <input id="uploader" type="button" value="Upload file" class="btn btn-outline-warning form-control" />
+                        <br /> <br />
                         @Html.DropDownList("Lang", new SelectList(
             new List<SelectListItem>
             {
@@ -131,13 +131,13 @@
                             new SelectListItem {Text = "Porter", Value = "english"},
             }, "Value", "Text"), new { @class = "form-control" })
                         <br />
-                        <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="فهرسة الملفات المرفوعة" class="btn btn-success form-control " />
+                        <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="فهرسة الملفات المرفوعة" class="btn-warning form-control " />
                     </div>
                 </div>
             }
         </div>
         <br />
-        <a href="Relevant_Docs"> <h1 style="font-family:Al-Jazeera-Arabic;font-size:30px ;text-align:center;color:#ffc000"><<< الانتقال الى صفحة البحث</h1></a>
+        <a href="~/Home/Relevant_Docs"> <h1 style="font-family:Al-Jazeera-Arabic;font-size:30px ;text-align:center;color:#ffc000"><<< الانتقال الى صفحة البحث</h1></a>
 
     </div>
     <style>

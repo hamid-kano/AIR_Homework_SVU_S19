@@ -355,3 +355,4 @@ C:\Users\AboReda\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR_SVU
 C:\Users\AboReda\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR_SVU_S19.csproj.CopyComplete
 C:\Users\AboReda\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR-SVU-S19.dll
 C:\Users\AboReda\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR-SVU-S19.pdb
+C:\Users\AboReda\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR_SVU_S19.csprojAssemblyReference.cache

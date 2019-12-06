@@ -37,7 +37,7 @@
         </div>
         <div class="site-navbar">
             <!-- Logo -->
-            <a href="index" class="site-logo">
+            <a href="~/Home/index" class="site-logo">
                 <img src="~/img/logo.png" alt="" />
             </a>
             <div class="header-right">
@@ -83,121 +83,80 @@
     </header>
     <!-- Header section end  -->
     @*class="row justify-content-center"  for center content *@
-<div style="background:#ffffff;margin-bottom:100px; height:1000px">
-    <link href="~/css/main_SearchBox.css" rel="stylesheet" />
-    <div class="s013" style="background-color:#2196f3">
-        @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
-        {
+    <div style="background:#ffffff;margin-bottom:100px; height:1000px">
+        <link href="~/css/main_SearchBox.css" rel="stylesheet" />
+        <div class="s013" style="background-color:#2196f3">
+            @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
+            {
 
-            <form>
-                <fieldset>
-                    <legend style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;color:#ffc000; margin-right: 10px;">صفحة البحث</legend>
-                </fieldset>
-                <div class="inner-form">
-                    <div class="left">
-                        <button class="btn-search" type="submit" style="font-family:Al-Jazeera-Arabic;font-size:30px ;height: 100px;text-align:center;">بحث</button>
-                        <div class="input-wrap first" style="height: 100px">
-                            <div class="input-field first">
-                                <label style="text-align:right;font:bold;font-family:Al-Jazeera-Arabic;margin-bottom:4px;font-size:14px">ماذا ؟</label>
-                                <input style="text-align:right;font:bold;font-family:Al-Jazeera-Arabic;" name="TxT_Search_Key" type="text" placeholder=". . . . تريد البحث عنه" />
+                <form>
+                    <fieldset>
+                        <legend style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;color:#ffc000; margin-right: 10px;">صفحة البحث</legend>
+                    </fieldset>
+                    <div class="inner-form">
+                        <div class="left">
+                            <button class="btn-search" type="submit" style="font-family:Al-Jazeera-Arabic;font-size:30px ;height: 100px;text-align:center;">بحث</button>
+                            <div class="input-wrap first" style="height: 100px">
+                                <div class="input-field first">
+                                    <label style="text-align:right;font:bold;font-family:Al-Jazeera-Arabic;margin-bottom:4px;font-size:14px">ماذا ؟</label>
+                                    <input style="text-align:right;font:bold;font-family:Al-Jazeera-Arabic;" name="TxT_Search_Key" type="text" placeholder=". . . . تريد البحث عنه" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="input-wrap second" style="height: 100px">
-                            <div class="input-field second">
-                                <label style="text-align:right;margin-bottom:2px;font:bold;font-family:Al-Jazeera-Arabic;font-size:14px">: نموذج البحث</label>
-                                <div class="input-select">
-                                    <select data-trigger="" name="AlgorithmRetrieve">
-                                        <option Value = "boolean">Boolean Model</option>
-                                        <option Value = "ex_boolean">Extend Boolean Model</option>
-                                        <option Value = "vector_space">Vector Space model</option>
-                                    </select>
+                            <div class="input-wrap second" style="height: 100px">
+                                <div class="input-field second">
+                                    <label style="text-align:right;margin-bottom:2px;font:bold;font-family:Al-Jazeera-Arabic;font-size:14px">: نموذج البحث</label>
+                                    <div class="input-select">
+                                        <select data-trigger="" name="AlgorithmRetrieve">
+                                            <option Value="boolean">Boolean Model</option>
+                                            <option Value="ex_boolean">Extend Boolean Model</option>
+                                            <option Value="vector_space">Vector Space model</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
-        }
+                </form>
+            }
         </div>
-    <script src="~/js/choices.js"></script>
-    <script>
-        const choices = new Choices('[data-trigger]',
-            {
-                searchEnabled: false,
-                itemSelectText: '',
-            });
+        <script src="~/js/choices.js"></script>
+        <script>
+            const choices = new Choices('[data-trigger]',
+                {
+                    searchEnabled: false,
+                    itemSelectText: '',
+                });
 
-    </script>
-    <hr />
-    <br />
-    @using (Html.BeginForm("ResultSearch", "Home", FormMethod.Get))
-    {
-        @Html.AntiForgeryToken()
+        </script>
 
-        <div class="form-horizontal">
-            <div class="form-group">
-                <div class="container justify-content-center row">
-                    <div class="col-md-3 ">
-
-                        
-                        @Html.Editor("TxT_Search_Key", "This is value", new { htmlAttributes = new { @class = "form-control" } })
-                    </div>
-                    <div class="col-md-3 ">
-                        @Html.DropDownList("AlgorithmRetrieve", new SelectList(
-                 new List<SelectListItem>
-                 {
-                                new SelectListItem {Text = "Boolean Model", Value = "boolean"},
-                                new SelectListItem {Text = "Extend Boolean Model", Value = "ex_boolean"},
-                                 new SelectListItem {Text = "Vector Space model", Value = "vector_space"},
-                 }, "Value", "Text"), new { @class = "form-control", @id = "AlgorithmRetrieve" })
-                    </div>
-                </div>
-                <br />
-                <div class="container" style="width:15%">
-                    <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="بحث" class="btn btn-success form-control " />
-                </div>
-            </div>
+        <!-- footer Section -->
+        <div class="footer">
+            <h5 style="text-align:center ;color:black;display: inline"><b>Yazan_112868</b></h5>
+            <h5 style="text-align:center ;color:black;margin:0 25px 0 25px;display: inline"><b>Tarek_109843</b></h5>
+            <h5 style="text-align:center ;color:black;display: inline"><b>Hamid_109490</b></h5>
         </div>
-    }
-    <br />
-    <br />
-</div>
-    <!-- footer Section -->
-    <div class="footer">
-        <h5 style="text-align:center ;color:black;display: inline"><b>Yazan_112868</b></h5>
-        <h5 style="text-align:center ;color:black;margin:0 25px 0 25px;display: inline"><b>Tarek_109843</b></h5>
-        <h5 style="text-align:center ;color:black;display: inline"><b>Hamid_109490</b></h5>
+        <div class="footer" style="bottom:0;background-color:#ffc000;height:5px;"></div>
+        <style>
+            .footer {
+                position: fixed;
+                left: 0;
+                bottom: 9px;
+                width: 100%;
+                color: white;
+                text-align: center;
+            }
+        </style>
     </div>
-    <div class="footer" style="bottom:0;background-color:#ffc000;height:5px;"></div>
-    <style>
-        .footer {
-            position: fixed;
-            left: 0;
-            bottom: 9px;
-            width: 100%;
-            color: white;
-            text-align: center;
-        }
-    </style>
-    <!-- end footer Section -->
-    <!-- Search model -->
-    <div class="search-model">
-        <div class="h-100 d-flex align-items-center justify-content-center">
-            <div class="search-close-switch">+</div>
-            <form class="search-model-form">
-                <input type="text" id="search-input" placeholder="Search here.....">
-            </form>
-        </div>
-    </div>
+    <!-- End footer Section -->
     <!-- Search model end -->
     <!--====== Javascripts & Jquery ======-->
-    <script src="~/js/bootstrap.min.js"></script>
-    <script src="~/js/circle-progress.min.js"></script>
-    <script src="~/js/jquery-3.2.1.min.js"></script>
-    <script src="~/js/jquery.magnific-popup.min.js"></script>
-    <script src="~/js/jquery.slicknav.min.js"></script>
-    <script src="~/js/main.js"></script>
-    <script src="~/js/owl.carousel.min.js"></script>
+    @*<script src="~/js/bootstrap.min.js"></script>
+        <script src="~/js/circle-progress.min.js"></script>
+        <script src="~/js/jquery-3.2.1.min.js"></script>
+        <script src="~/js/jquery.magnific-popup.min.js"></script>
+        <script src="~/js/jquery.slicknav.min.js"></script>
+        <script src="~/js/main.js"></script>
+        <script src="~/js/owl.carousel.min.js"></script>*@
 </body>
 
 </html>
