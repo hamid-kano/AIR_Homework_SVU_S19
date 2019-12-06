@@ -54,7 +54,9 @@ namespace AIR_SVU_S19.Controllers
             else if (AlgorithmRetrieve == "ex_boolean")
             { }
             else
-            { BooleanModel (TxT_Search_Key); }
+            {
+                fileR= BooleanModel (TxT_Search_Key);
+            }
             return View(fileR);
         }
         public JsonResult Upload()
@@ -272,7 +274,7 @@ namespace AIR_SVU_S19.Controllers
 
         public List<Files> BooleanModel(string QueryText)
         {
-
+            List<Files> listFileRelevant = new List<Files>();
             string plainQuery = ReturnCleanASCII(QueryText);
             plainQuery = Stopword_Arabic.RemoveStopwords(plainQuery);
             plainQuery = Stopword_English.RemoveStopwords(plainQuery);
@@ -284,30 +286,119 @@ namespace AIR_SVU_S19.Controllers
             bool[] tempBool = new bool[db.Files.Count()];
             string wordTemp = "";
             OrderTerms_DocsBoolean term = new OrderTerms_DocsBoolean();
-            for (int i = 1; i < listWordQuery.Length; i++)
+            for (int i = 0; i < listWordQuery.Length; i++)
             {
-                wordTemp = listWordQuery[0];
-                result =
-                if (!listWordQuery.ElementAt(i).Equals("not"))
+                if (i == 0)
                 {
-
+                    if (listWordQuery[0] == "not")
+                    {
+                        wordTemp = listWordQuery[i + 1];
+                        term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                        if (term != null)
+                        {
+                            tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                            tempInt = Array.ConvertAll(tempStr, int.Parse);
+                            result = tempInt.Select(b => b != 1).ToArray();
+                        }
+                        i++;
+                    }
+                    else
+                    {
+                        wordTemp = listWordQuery[i];
+                        term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                        if (term != null)
+                        {
+                            tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                            tempInt = Array.ConvertAll(tempStr, int.Parse);
+                            result = tempInt.Select(b => b == 1).ToArray();
+                        }
+                    }
                 }
                 else
                 {
-                    wordTemp = listWordQuery[i + 1];
-                    term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
-                    if (term != null)
+                    if (listWordQuery[i] == "not")
                     {
-                        tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
-                        tempInt = Array.ConvertAll(tempStr, int.Parse);
-                        tempBool = tempInt.Select(b=>b!=1).ToArray();
-                        //tempBool = tempBool.Select(b=>!b.Equals(true)).ToArray();
-                        result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
+                        wordTemp = listWordQuery[i + 1];
+                        term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                        if (term != null)
+                        {
+                            tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                            tempInt = Array.ConvertAll(tempStr, int.Parse);
+                            tempBool = tempInt.Select(b => b != 1).ToArray();
+                            result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
+                        }
+                        i++;
+                    }
+                    else if (listWordQuery[i] == "and")
+                    {
+
+                        if (listWordQuery[i + 1] == "not")
+                        {
+                            wordTemp = listWordQuery[i + 2];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                tempBool = tempInt.Select(b => b != 1).ToArray();
+                                result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
+                            }
+                            i+=2;
+                        }
+                        else
+                        {
+                            wordTemp = listWordQuery[i + 1];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                tempBool = tempInt.Select(b => b == 1).ToArray();
+                                result = result.Zip(tempBool, (d1, d2) => d1 && d2).ToArray();
+                            }
+                            i++;
+
+                        }
+                    }
+                    else if (listWordQuery[i] == "or")
+                    {
+                        if (listWordQuery[i + 1] == "not")
+                        {
+                            wordTemp = listWordQuery[i + 2];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                tempBool = tempInt.Select(b => b != 1).ToArray();
+                                result = result.Zip(tempBool, (d1, d2) => d1 || d2).ToArray();
+                            }
+                            i+=2;
+                        }
+                        else
+                        {
+                            wordTemp = listWordQuery[i + 1];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                tempBool = tempInt.Select(b => b == 1).ToArray();
+                                result = result.Zip(tempBool, (d1, d2) => d1 || d2).ToArray();
+                            }
+                            i++;
+                        }
                     }
                 }
             }
-            
-            return null;
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (result[i])
+                {
+                    listFileRelevant.Add(db.Files.ToList()[i]);
+                }
+            }
+            return listFileRelevant;
         }
         public string ReturnCleanASCII(string s)
         {

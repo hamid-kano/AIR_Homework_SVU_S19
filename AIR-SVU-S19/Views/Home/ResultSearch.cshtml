@@ -176,7 +176,30 @@
                                     <h5 style="color:darkgray;display: inline;">File Name:</h5>
                                     <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
                                     <br />
-                                    <p id="Paragraph">@result.File_content.Substring(50, 150)</p>
+                                    <p id="Paragraph">
+                                        @{
+                                            if (result.File_content.Length > 300)
+                                            {
+                                                @result.File_content.Substring(0, 200)
+                                            }
+                                            else if (result.File_content.Length > 150)
+                                            {
+                                                @result.File_content.Substring(0, 150)
+                                            }
+                                            else if (result.File_content.Length > 75)
+                                            {
+                                                @result.File_content.Substring(0, 75)
+                                            }
+                                            else if (result.File_content.Length > 25)
+                                            {
+                                                @result.File_content.Substring(0, 25)
+                                            }
+                                            else
+                                            {
+                                                @result.File_content
+                                            }
+                                        }
+                                    </p>
                                     <input type="button" class="btn btn-info" value="استعراض الملف" onclick="AssignButtonClicked(this)"
                                            data-assigned-id="@result.File_content" />
                                 </td>
