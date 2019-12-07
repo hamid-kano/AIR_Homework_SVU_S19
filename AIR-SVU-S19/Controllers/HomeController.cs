@@ -39,11 +39,33 @@ namespace AIR_SVU_S19.Controllers
         }
         public ActionResult ResultSearch(string AlgorithmRetrieve, string TxT_Search_Key,int? i)
         {
+            ISRI_Stemmer_Arabic stemmerArabic = new ISRI_Stemmer_Arabic();
+            Porter_Stemmer_English StemmerEnglish = new Porter_Stemmer_English();
+            string _TextQuery = TxT_Search_Key.ToLower();
+            _TextQuery = ReturnCleanASCII(_TextQuery);
+            _TextQuery = Stopword_Arabic.RemoveStopwords(_TextQuery);
+            _TextQuery = Stopword_English.RemoveStopwords(_TextQuery);
+            string StemmingTextQuery = "";
+            if (Regex.Matches(_TextQuery, "[a-zA-Z]{2,}").Count > 2)
+            {
+                foreach (var word in _TextQuery.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    StemmingTextQuery += StemmerEnglish.stem(word) + " ";
+                }
+            }
+            else
+            {
+                foreach (var word in _TextQuery.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    StemmingTextQuery += stemmerArabic.Stemming(word) + " ";
+                }
+            }
+                
             List<Files> fileR = new List<Files>();
             Dictionary<string, double> resutlFR;
             if (AlgorithmRetrieve == "vector_space")
             {
-                resutlFR = VectorSpace(TxT_Search_Key);
+                resutlFR = VectorSpace(StemmingTextQuery);
                 var sortedDict = from file in resutlFR orderby file.Value descending select file;
                 foreach (var item in sortedDict)
                 {
@@ -57,20 +79,32 @@ namespace AIR_SVU_S19.Controllers
             { }
             else
             {
-                fileR= BooleanModel (TxT_Search_Key);
+                fileR= BooleanModel (StemmingTextQuery);
             }
             ViewBag.ReturnFileCount = fileR.Count;
-
-            // heigh light queryText 
+            Dictionary<int, int> Rank = new Dictionary<int, int>();
+            // heigh light queryText  and Compute Ranks to Files
             foreach (var item in fileR)
             {
+                int RankFiles = 0;
                 foreach (var word in TxT_Search_Key.Split(charsSplit,StringSplitOptions.RemoveEmptyEntries))
                 {
                     item.File_content=item.File_content.Replace(word,"<strong style="+'"'+"background-color: yellow; color: black;"+'"'+">"+word +"</strong>");
+                    RankFiles += Regex.Matches(item.File_content, word).Count;
                 }
+                Rank.Add(item.File_ID, RankFiles);
+            }
+            var sortedDict2 = from file in Rank orderby file.Value descending select file;
+            List<Files> FilesOrderToRank = new List<Files>();
+            List<int> rank = new List<int>();
+            foreach (var item in sortedDict2) // Create List After order
+            {
+                FilesOrderToRank.Add(db.Files.Find(item.Key));
+                rank.Add(item.Value);
             }
             //
-            return View(fileR.ToList().ToPagedList(i ?? 1,3));
+            ViewBag.RankList = rank;
+            return View(FilesOrderToRank.ToList().ToPagedList(i ?? 1,3));
         }
         public JsonResult Upload()
         {
@@ -288,11 +322,7 @@ namespace AIR_SVU_S19.Controllers
         public List<Files> BooleanModel(string QueryText)
         {
             List<Files> listFileRelevant = new List<Files>();
-            string plainQuery = ReturnCleanASCII(QueryText);
-            plainQuery = Stopword_Arabic.RemoveStopwords(plainQuery);
-            plainQuery = Stopword_English.RemoveStopwords(plainQuery);
-            plainQuery = plainQuery.ToLower();
-            string [] listWordQuery =plainQuery.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+            string [] listWordQuery = QueryText.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
             bool[] result = new bool[db.Files.Count()];
             string[] tempStr =new string[db.Files.Count()];
             int[] tempInt = new int[db.Files.Count()];

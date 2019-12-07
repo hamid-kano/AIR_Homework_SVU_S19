@@ -39,15 +39,12 @@ namespace AIR_SVU_S19
         public static double[] createVector_For_Query(string Query)
         {
             var listBooleanTerm = db.OrderTerms_DocsBoolean.ToList();
-            string poureText = ReturnCleanASCII(Query);
             int count_File = db.Files.Count();
             double[] queryvector = new double[listBooleanTerm.Count];
-            poureText = Stopword_Arabic.RemoveStopwords(poureText);
-            poureText = Stopword_English.RemoveStopwords(poureText);
             int i = 0;
             foreach (var item in listBooleanTerm)
             {
-                    int FTQ = Regex.Matches(poureText, item.Term,RegexOptions.IgnoreCase).Count;
+                    int FTQ = Regex.Matches(Query, item.Term,RegexOptions.IgnoreCase).Count;
                     double freqTD = Math.Log(count_File / Regex.Matches(item.Docs, "1").Count);
                     if (freqTD < 0) freqTD = 0.0;
                     double tfIDF = FTQ * freqTD;
