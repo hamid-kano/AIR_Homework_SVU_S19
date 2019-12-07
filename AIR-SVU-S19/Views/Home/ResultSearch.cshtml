@@ -34,7 +34,7 @@
     <!-- Main Stylesheets -->
     <link href="~/css/style.css" rel="stylesheet" />
 </head>
-<body >
+<body onload="HeighLightTextQuery(this)">
     <!-- Header section  -->
     <header class="header-section clearfix">
         <div style="width:100%;background-color:black;height:5px">
@@ -135,98 +135,97 @@
         </div>
         @if (Model.Count() == 0)
         {
-    <div style="background-color:white;margin-bottom:50px;padding-bottom:10px;padding-top:10px">
-        <h4 style="color:red;text-align:center"> . . . . . لم يتم العثور على نتائج مطابقة</h4>
-    </div>
+            <div style="background-color:white;margin-bottom:50px;padding-bottom:10px;padding-top:10px">
+                <h4 style="color:red;text-align:center"> . . . . . لم يتم العثور على نتائج مطابقة</h4>
+            </div>
 
         }
         `  @if (Model.Count() != 0)
         {
 
-    <div style="background-color:white ;padding:7px 20px 0px 20px">
-        <h4 style="display:inline;font-family:Al-Jazeera-Arabic;font-size:30px;margin-left:45%">نتائج البحث</h4>
-        <h4 style="text-align:right;display:inline;font-family:Al-Jazeera-Arabic;font-size:30px;"> عدد الملفات المطابقة : </h4>
-        <h4 style="text-align:right;display:inline;margin-left:10%">( @ViewBag.ReturnFileCount )</h4>
+            <div style="background-color:white ;padding:7px 20px 0px 20px">
+                <h4 style="display:inline;font-family:Al-Jazeera-Arabic;font-size:30px;margin-left:45%">نتائج البحث</h4>
+                <h4 style="text-align:right;display:inline;font-family:Al-Jazeera-Arabic;font-size:30px;"> عدد الملفات المطابقة : </h4>
+                <h4 style="text-align:right;display:inline;margin-left:10%">( @ViewBag.ReturnFileCount )</h4>
 
-        <hr />
-        <div>
-            <table class="table table-bordered" style="background-color:white">
-                <tr>
-                    @*<th>@Html.DisplayFor(m=>m.First().File_Name)</th>
-                    <th>@Html.DisplayFor(m => m.First().File_ID)</th>*@
-                    <th style="font-family:Al-Jazeera-Arabic;font-size:large;text-align:center ;width:75%;color:darkblue">اسم الملف</th>
-                    <th style="font-family:Al-Jazeera-Arabic;font-size:large ;text-align:center;color:darkblue">مرتبة الملف</th>
-                </tr>
-                @foreach (var result in Model)
-                {
-                    <tr>
-                        <td onclick="contentFile('hamid')">
-                            <span class="dot"></span>
-                            <a href="#">@Server.MapPath("/").Substring(20)Files\@result.File_Name</a><br />
-                            <h5 style="color:darkgray;display: inline;">File Name:</h5>
-                            <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
-                            <br />
-                            <p id="Paragraph">
-                                @{
-                                    if (result.File_content.Length > 300)
-                                    {
-                                        @result.File_content.Substring(0, 200)
-                                    }
-                                    else if (result.File_content.Length > 150)
-                                    {
-                                        @result.File_content.Substring(0, 150)
-                                    }
-                                    else if (result.File_content.Length > 75)
-                                    {
-                                        @result.File_content.Substring(0, 75)
-                                    }
-                                    else if (result.File_content.Length > 25)
-                                    {
-                                        @result.File_content.Substring(0, 25)
-                                    }
-                                    else
-                                    {
-                                        @result.File_content
-                                    }
-                                }
-                            </p>
-                            <input type="button" class="btn btn-outline-warning" value="استعراض الملف" onclick="AssignButtonClicked(this)"
-                                   data-assigned-id="@result.File_content" />
-                            <div id="id01" class="modal">
-                                <form style="width:65%" class="modal-content animate" action="/action_page.php" method="post">
-                                    <div style="width:100%;height:35px">
-                                        <span style="margin-bottom:5px;height:5px;width:5px" onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-                                    </div>
-                                    <p id="desc" style="overflow-y: scroll;height:400px;border-style:double; text-align:center">
-                                        @result.File_content
+                <hr />
+                <div>
+                    <table class="table table-bordered" style="background-color:white">
+                        <tr>
+                            @*<th>@Html.DisplayFor(m=>m.First().File_Name)</th>
+                                <th>@Html.DisplayFor(m => m.First().File_ID)</th>*@
+                            <th style="font-family:Al-Jazeera-Arabic;font-size:large;text-align:center ;width:75%;color:darkblue">اسم الملف</th>
+                            <th style="font-family:Al-Jazeera-Arabic;font-size:large ;text-align:center;color:darkblue">مرتبة الملف</th>
+                        </tr>
+                        @foreach (var result in Model)
+                        {
+                            <tr>
+                                <td onclick="contentFile('hamid')">
+                                    <span class="dot"></span>
+                                    <a href="#">@Server.MapPath("/").Substring(20)Files\@result.File_Name</a><br />
+                                    <h5 style="color:darkgray;display: inline;">File Name:</h5>
+                                    <h6 style="margin-left:25px;display: inline;"> @Html.DisplayFor(m => result.File_Name)</h6>
+                                    <br />
+                                    <p id="Paragraph">
+                                        @{
+                                            if (result.File_content.Length > 300)
+                                            {
+                                                @result.File_content.Substring(0, 200)
+                                            }
+                                            else if (result.File_content.Length > 150)
+                                            {
+                                                @result.File_content.Substring(0, 150)
+                                            }
+                                            else if (result.File_content.Length > 75)
+                                            {
+                                                @result.File_content.Substring(0, 75)
+                                            }
+                                            else if (result.File_content.Length > 25)
+                                            {
+                                                @result.File_content.Substring(0, 25)
+                                            }
+                                            else
+                                            {
+                                                @result.File_content
+                                            }
+                                        }
                                     </p>
-                                    <div style="padding:5px 45% 25px 45%">
-                                        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="btn btn-danger">Cancel</button>
-
+                                    <input type="button" class="btn btn-outline-warning" value="استعراض الملف" onclick="AssignButtonClicked(this)"
+                                           data-assigned-id="@result.File_content" />
+                                    <div id="id01" class="modal">
+                                        <form style="width:65%" class="modal-content animate" action="/action_page.php" method="post">
+                                            <div style="width:100%;height:35px">
+                                                <span style="margin-bottom:5px;height:5px;width:5px" onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+                                            </div>
+                                            <p id="desc" style="overflow-y: scroll;height:400px;border-style:double; text-align:center">
+                                                @result.File_content
+                                            </p>
+                                            <div style="padding:5px 45% 25px 45%">
+                                                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="btn btn-danger">Cancel</button>
+                                            </div>
+                                        </form>
                                     </div>
-                                </form>
-                            </div>
-                        </td>
-                        <td>
-                        </td>
-                    </tr>
-                }
-            </table>
-            <div style="font-size:xx-large;color:blue ;padding-left:45%;background-color:white">  @Html.PagedListPager(Model, i => Url.Action("ResultSearch", "Home", new { i, AlgorithmRetrieve = Request.QueryString["AlgorithmRetrieve"], TxT_Search_Key = Request.QueryString["TxT_Search_Key"], @class = "PagerSearch" }))</div>
-        </div>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        @*<div id="bodydesc" style="width:50%;float:left;">
-            <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">File's Content:</label><hr />
-            <p id="desc" style="overflow-y: scroll;height:600px;border-style:double; text-align:center">
-                //Here is my large content with images...
-            </p>
-        </div>*@
-    </div>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <div style="font-size:xx-large;color:blue ;padding-left:45%;background-color:white">  @Html.PagedListPager(Model, i => Url.Action("ResultSearch", "Home", new { i, AlgorithmRetrieve = Request.QueryString["AlgorithmRetrieve"], TxT_Search_Key = Request.QueryString["TxT_Search_Key"], @class = "PagerSearch" }))</div>
+                </div>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                @*<div id="bodydesc" style="width:50%;float:left;">
+                        <label style="margin-bottom:2px;font-family:Al-Jazeera-Arabic;font-size:xx-large ;color:darkblue" class="label-info">File's Content:</label><hr />
+                        <p id="desc" style="overflow-y: scroll;height:600px;border-style:double; text-align:center">
+                            //Here is my large content with images...
+                        </p>
+                    </div>*@
+            </div>
         }
     </div>
 
@@ -240,16 +239,34 @@
                     regex = RegExp(words.join('|'), 'gi'),
                     replacement = '<' + tag + ' style="background-color: yellow;color: black;">$&</' + tag + '>';
                 return this.html(function () {
+                    return $(this).text().replace("2222222222", "55555555555");
+                });
+            };
+            $('P').wrapInTag({
+                tag: 'strong',
+                words: ['52525252']
+            });   // FOR HEIGHLIGHT TEXT QUERY IN JSON AND JAVASCRIPT . . . . . . .
+            document.getElementById('id01').style.display = 'block';
+
+        }
+    </script>
+    <script>
+        function HeighLightTextQuery(elem) {
+            var contentFile = $(elem).data('assigned-id');
+            document.getElementById("desc").textContent = contentFile;
+            $.fn.wrapInTag = function (opts) {
+                var tag = opts.tag || 'strong',
+                    words = opts.words || [],
+                    regex = RegExp(words.join('|'), 'gi'),
+                    replacement = '<' + tag + ' style="background-color: yellow;color: black;">$&</' + tag + '>';
+                return this.html(function () {
                     return $(this).text().replace(regex, replacement);
                 });
             };
-            alert(document.getElementsByName("TxT_Search_Key").text);
             $('P').wrapInTag({
                 tag: 'strong',
-                words: ['comput', 'المعلومات']
-            });
-            document.getElementById('id01').style.display = 'block';
-
+                words: ['52525252']
+            });   // FOR HEIGHLIGHT TEXT QUERY IN JSON AND JAVASCRIPT . . . . . . .
         }
     </script>
 

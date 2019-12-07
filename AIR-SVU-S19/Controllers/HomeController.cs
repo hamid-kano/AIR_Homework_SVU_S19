@@ -60,6 +60,16 @@ namespace AIR_SVU_S19.Controllers
                 fileR= BooleanModel (TxT_Search_Key);
             }
             ViewBag.ReturnFileCount = fileR.Count;
+
+            // heigh light queryText 
+            foreach (var item in fileR)
+            {
+                foreach (var word in TxT_Search_Key.Split(charsSplit,StringSplitOptions.RemoveEmptyEntries))
+                {
+                    item.File_content=item.File_content.Replace(word,"<strong style="+'"'+"background-color: yellow; color: black;"+'"'+">"+word +"</strong>");
+                }
+            }
+            //
             return View(fileR.ToList().ToPagedList(i ?? 1,3));
         }
         public JsonResult Upload()
