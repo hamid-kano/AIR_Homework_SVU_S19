@@ -59,6 +59,7 @@ namespace AIR_SVU_S19.Controllers
             {
                 fileR= BooleanModel (TxT_Search_Key);
             }
+            ViewBag.ReturnFileCount = fileR.Count;
             return View(fileR.ToList().ToPagedList(i ?? 1,3));
         }
         public JsonResult Upload()
