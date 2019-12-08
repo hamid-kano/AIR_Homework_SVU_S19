@@ -46,7 +46,7 @@ namespace AIR_SVU_S19.Controllers
             _TextQuery = Stopword_Arabic.RemoveStopwords(_TextQuery);
             _TextQuery = Stopword_English.RemoveStopwords(_TextQuery);
             string StemmingTextQuery = "";
-            if (Regex.Matches(_TextQuery, "[a-zA-Z]{2,}").Count > 2)
+            if (Regex.Matches(_TextQuery, "[a-zA-Z]{2,}").Count >0)
             {
                 foreach (var word in _TextQuery.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
                 {
@@ -97,13 +97,39 @@ namespace AIR_SVU_S19.Controllers
             var sortedDict2 = from file in Rank orderby file.Value descending select file;
             List<Files> FilesOrderToRank = new List<Files>();
             List<int> rank = new List<int>();
-            foreach (var item in sortedDict2) // Create List After order
+            int AvarageRank = 0;
+            if (sortedDict2.Count()!=0)
             {
-                FilesOrderToRank.Add(db.Files.Find(item.Key));
-                rank.Add(item.Value);
-            }
-            //
-            ViewBag.RankList = rank;
+                int meanRank = sortedDict2.First().Value;
+                foreach (var item in sortedDict2) // Create List After order
+                {
+
+                    if (item.Value > meanRank - 1)
+                    {
+                        AvarageRank = 5;
+                        rank.Add(AvarageRank);
+                        FilesOrderToRank.Add(db.Files.Find(item.Key));
+                    }
+                    else if (meanRank != 0)
+                    {
+                        if (item.Value != 0)
+                        {
+                            AvarageRank = Convert.ToInt32(((double)item.Value / meanRank) * 5);
+                            rank.Add(AvarageRank);
+                            FilesOrderToRank.Add(db.Files.Find(item.Key));
+                        }
+                    }
+                    else
+                    {
+                        rank.Add(5);
+                        FilesOrderToRank.Add(db.Files.Find(item.Key));
+                    }
+
+
+                }
+
+            }            //
+            ViewBag.RankList = rank.ToList().ToPagedList(i ?? 1,3);
             return View(FilesOrderToRank.ToList().ToPagedList(i ?? 1,3));
         }
         public JsonResult Upload()

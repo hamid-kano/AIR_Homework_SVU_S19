@@ -101,9 +101,9 @@
                         <div class="left">
                             <button class="btn-search" type="submit" style="font-family:Al-Jazeera-Arabic;font-size:30px ;height: 100px;text-align:center;">بحث</button>
                             <div class="input-wrap first" style="height: 100px;background-color:#e0d7d747">
-                                <div class="input-field first">
+                                <div class="input-field first" style="padding-right:0px;padding-left:0px">
                                     <label style="text-align:right;font:bold;font-family:Al-Jazeera-Arabic;margin-bottom:4px;font-size:14px">ماذا ؟</label>
-                                    <input style="text-align:right;font:bold;font-family:Al-Jazeera-Arabic;" name="TxT_Search_Key" type="text" placeholder=". . . . تريد البحث عنه" />
+                                    <input style="text-align:right;font:bold;font-family:Al-Jazeera-Arabic;max-width:inherit" name="TxT_Search_Key" type="text" placeholder=". . . . تريد البحث عنه" />
                                 </div>
                             </div>
                             <div class="input-wrap second" style="height: 100px;background-color:#e0d7d747">
@@ -153,10 +153,11 @@
                     <table class="table table-bordered" style="background-color:white">
                         <tr>
                             @*<th>@Html.DisplayFor(m=>m.First().File_Name)</th>
-                                <th>@Html.DisplayFor(m => m.First().File_ID)</th>*@
+            <th>@Html.DisplayFor(m => m.First().File_ID)</th>*@
                             <th style="font-family:Al-Jazeera-Arabic;font-size:large;text-align:center ;width:75%;color:darkblue">اسم الملف</th>
                             <th style="font-family:Al-Jazeera-Arabic;font-size:large ;text-align:center;color:darkblue">مرتبة الملف</th>
                         </tr>
+                        @{int k = 0;}
                         @foreach (var result in Model)
                         {
                             <tr>
@@ -206,12 +207,33 @@
                                         </form>
                                     </div>
                                 </td>
-                                <td>
+                                <td style="padding-left:5%;padding-top:5%">
+                                    @if (ViewBag.RankList[k] == 0)
+                                    {
+                                        <span class="starGlowN"></span>
+                                        <span class="starFadeN"></span>
+                                        <span class="starFadeN"></span>
+                                        <span class="starFadeN"></span>
+                                        <span class="starFadeN"></span>
+                                    }
+                                    else
+                                    {
+                                        for (int n = 0; n < ViewBag.RankList[k]; n++)
+                                        {
+                                            <span class="starGlowN"></span>
+                                        }
+                                        for (int n = ViewBag.RankList[k]; n < 5; n++)
+                                        {
+                                            <span class="starFadeN"></span>
+                                        }
+                                    }
+                                    <br />
                                 </td>
                             </tr>
-                        }
+                             k++;
+                         }
                     </table>
-                    <div style="font-size:xx-large;color:blue ;padding-left:45%;background-color:white">  @Html.PagedListPager(Model, i => Url.Action("ResultSearch", "Home", new { i, AlgorithmRetrieve = Request.QueryString["AlgorithmRetrieve"], TxT_Search_Key = Request.QueryString["TxT_Search_Key"], @class = "PagerSearch" }))</div>
+                    <div style="font-size:xx-large;color:blue ;padding-left:30%;background-color:white">  @Html.PagedListPager(Model, i => Url.Action("ResultSearch", "Home", new { i, AlgorithmRetrieve = Request.QueryString["AlgorithmRetrieve"], TxT_Search_Key = Request.QueryString["TxT_Search_Key"], @class = "PagerSearch" }))</div>
                 </div>
                 <br />
                 <br />
@@ -269,7 +291,7 @@
             });   // FOR HEIGHLIGHT TEXT QUERY IN JSON AND JAVASCRIPT . . . . . . .
         }
     </script>
-
+    <link href="~/Content/Site.css" rel="stylesheet" />
     <style>
         /* Extra styles for the cancel button */
         .cancelbtn {
@@ -403,6 +425,44 @@
             width: 100%;
             color: white;
             text-align: center;
+        }
+        .pagination >li
+        {
+            margin-left:2px;
+            margin-right:2px;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+          -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+          background-image: -webkit-linear-gradient(top, #5cb85c 0%, #419641 100%);
+          background-image: -o-linear-gradient(top, #5cb85c 0%, #419641 100%);
+          background-image: -webkit-gradient(linear, left top, left bottom, from(#5cb85c), to(#419641));
+          background-image: linear-gradient(to bottom, #5cb85c 0%, #419641 100%);
+          filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5cb85c', endColorstr='#ff419641', GradientType=0);
+          filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+          background-repeat: repeat-x;
+          border-color: #3e8f3e;
+           display: inline-block;
+          margin-bottom: 0;
+          font-weight: normal;
+          text-align: center;
+          white-space: nowrap;
+          vertical-align: middle;
+          -ms-touch-action: manipulation;
+          touch-action: manipulation;
+          cursor: pointer;
+          color: #fff;
+          background-color: #5cb85c;
+          border-color: #4cae4c;
+          border: 1px solid transparent;
+          padding: 6px 12px;
+          font-size: 25px;
+          color:white;
+          line-height: 1.42857143;
+          border-radius: 4px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
         }
     </style>
     <!-- end footer Section -->

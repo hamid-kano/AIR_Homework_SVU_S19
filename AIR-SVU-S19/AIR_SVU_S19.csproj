@@ -281,6 +281,8 @@
     <Content Include="js\jquery.magnific-popup.min.js" />
     <Content Include="js\jquery.slicknav.min.js" />
     <Content Include="js\owl.carousel.min.js" />
+    <Content Include="RatingImages\StarFade.gif" />
+    <Content Include="RatingImages\StarGlow.gif" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="icon-fonts\fontawesome-webfont.eot" />
