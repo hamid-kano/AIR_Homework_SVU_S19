@@ -89,14 +89,26 @@ namespace AIR_SVU_S19.Controllers
             foreach (var item in fileR)
             {
                 int RankFiles = 0;
-                foreach (var word in TxT_Search_Key.Split(charsSplit,StringSplitOptions.RemoveEmptyEntries))
+                foreach (var word in TxT_Search_Key.ToLower().Split(charsSplit,StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (!TermBoolean.Contains(word)) 
                     {
-                        item.File_content = item.File_content.Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
-                        RankFiles += Regex.Matches(item.File_content, word).Count; 
+                        RankFiles += Regex.Matches(item.File_content.ToLower(), word).Count;
+                        item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
                     }
                 }
+                if (RankFiles==0)
+                {
+                    foreach (var word in StemmingTextQuery.ToLower().Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (!TermBoolean.Contains(word))
+                        {
+                            RankFiles += Regex.Matches(item.File_content.ToLower(), word).Count;
+                            item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
+                        }
+                    }
+                }
+
                 Rank.Add(item.File_ID, RankFiles);
             }
             var sortedDict2 = from file in Rank orderby file.Value descending select file;
@@ -307,7 +319,7 @@ namespace AIR_SVU_S19.Controllers
             foreach (var item in termDocumentIncidenceMatrix)
             {
                 OrderTerms_DocsBoolean orederTerm = new OrderTerms_DocsBoolean();
-                orederTerm.Term = item.Key;
+                orederTerm.Term = item.Key.ToLower();
                 foreach (var value in item.Value)
                 {
                     output += value+" ";
@@ -670,9 +682,82 @@ namespace AIR_SVU_S19.Controllers
 
                     }
 
+
+
+                    ///// arabic boolean
+
+                    if (i == 0)
+                    {
+                        if (listWordQuery[i] == "دون")
+                        {
+                            wordTemp = listWordQuery[i + 1];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                TempSIM_DQ = 1 - Math.Pow(tempInt[indexFile], 2);
+                            }
+                            i++;
+                        }
+                        else
+                        {
+                            wordTemp = listWordQuery[i];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                TempSIM_DQ = tempInt[indexFile];
+                            }
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        if (listWordQuery[i] == "دون")
+                        {
+                            wordTemp = listWordQuery[i + 1];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                TempSIM_DQ = 1 - Math.Pow(tempInt[indexFile], 2);
+                            }
+                            i++;
+                        }
+                        if (listWordQuery[i] == "و")
+                        {
+                            wordTemp = listWordQuery[i + 1];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                TempSIM_DQ = 1 - ((double)Math.Sqrt(Math.Pow(1 - TempSIM_DQ, 2) + Math.Pow(1 - tempInt[indexFile], 2) / 2));
+                            }
+                            i++;
+                        }
+                        if (listWordQuery[i] == "أو" || listWordQuery[i] == "او")
+                        {
+
+                            wordTemp = listWordQuery[i + 1];
+                            term = db.OrderTerms_DocsBoolean.Where(t => t.Term.ToLower().Equals(wordTemp)).FirstOrDefault();
+                            if (term != null)
+                            {
+                                tempStr = term.Docs.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                tempInt = Array.ConvertAll(tempStr, int.Parse);
+                                TempSIM_DQ = (double)Math.Sqrt(Math.Pow(1 - TempSIM_DQ, 2) + Math.Pow(1 - tempInt[indexFile], 2)) / 2;
+                            }
+                            i++;
+                        }
+
+                    }
                 }
 
                 listFileRelevant.Add(file.File_ID, TempSIM_DQ);
+                indexFile++;
             }
 
             var sortedDict = from file in listFileRelevant orderby file.Value descending select file;
