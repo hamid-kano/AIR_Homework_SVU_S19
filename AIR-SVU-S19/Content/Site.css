@@ -1,31 +1,16 @@
 ﻿
 /*   for Ranking  */
 
-.starFade {
-    background-image: url('/RatingImages/StarFade.gif');
-    min-width: 30px;
-    min-height: 30px;
-    display: inline-block;
-    cursor: pointer;
-}
-
 .starFadeN {
-    background-image: url('/RatingImages/StarFade.gif');
+    background-image: url('/RatingImages/StarFade.png');
     min-width: 30px;
     min-height: 30px;
     display: inline-block;
 }
 
-.starGlow {
-    background-image: url('/RatingImages/starglow.gif');
-    min-width: 30px;
-    min-height: 30px;
-    display: inline-block;
-    cursor: pointer;
-}
 
 .starGlowN {
-    background-image: url('/RatingImages/starglow.gif');
+    background-image: url('/RatingImages/StarGlow.png');
     min-width: 30px;
     min-height: 30px;
     display: inline-block;

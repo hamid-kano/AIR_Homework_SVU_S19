@@ -28,7 +28,7 @@
     <!-- Main Stylesheets -->
     <link href="~/css/style.css" rel="stylesheet" />
 </head>
-<body>
+<body onload="validation()">
     <!-- Header section  -->
     <header class="header-section clearfix">
         <div style="width:100%;background-color:black;height:5px">
@@ -63,14 +63,16 @@
             <!-- Menu -->
             <nav class="site-nav-menu">
                 <ul>
-                    <li class="active"><a href="index">Home</a></li>
-                    <li><a href="#">About us</a></li>
+                    <li class="active"><a href="~/Home/index">Home</a></li>
                     <li>
-                        <a href="#">Solutions</a>
+                        <a href="#">Students</a>
                         <ul class="sub-menu">
-                            <li><a href="#">Elements</a></li>
+                            <li><a href="#">Hamid_109490</a></li>
+                            <li><a href="#">Tarek_109843</a></li>
+                            <li><a href="#">Yazan_112868</a></li>
                         </ul>
                     </li>
+                    <li><a href="#">About us</a></li>
                     <li><a href="#">Blog</a></li>
                     <li><a href="#">Contact</a></li>
                 </ul>
@@ -105,7 +107,9 @@
         font-size: 40px;
         text-align: center;
         text-decoration-line: underline;
-        color: #ffc000">صفحة الاعــدادات</h1>
+        color: #ffc000">
+                صفحة الاعــدادات
+            </h1>
             @using (Html.BeginForm("Mainpulation_Text", "Home", FormMethod.Post))
             {
                 <br />
@@ -131,6 +135,10 @@
                             new SelectListItem {Text = "Porter", Value = "english"},
             }, "Value", "Text"), new { @class = "form-control" })
                         <br />
+                        <input style="text-align:center;font:bold;font-family:Al-Jazeera-Arabic;display:inline;margin-left:25px" name="Password" type="text" class="input-group-text " placeholder="كلمة المرور" />
+                        <input style="text-align:center;font:bold;font-family:Al-Jazeera-Arabic;display:inline" name="userName" type="text" class="input-group-text " placeholder="مدير النظام" />
+                        <br />
+                        <br />
                         <input style="font-family:Al-Jazeera-Arabic;font-size:large" type="submit" id="Manp" value="فهرسة الملفات المرفوعة" class="btn-warning form-control " />
                     </div>
                 </div>
@@ -144,10 +152,11 @@
         input[type="file"] {
             display: none;
         }
+
         html, body {
-                max-width: 100%;
-                overflow-x: hidden;
-            }
+            max-width: 100%;
+            overflow-x: hidden;
+        }
 
         .custom-file-upload {
             border: 1px solid #ccc;
@@ -237,13 +246,11 @@
             }
             return false;
         }
-    </script>
-    <script>
-        $(document).ready(function () {
-            $("#Manp").on("click", function () {
-                alert('Your Message' + $("#Lang").val() + "-------" + $("#Algorithm").val());
-            });
-        });
+
+        function validation()
+        {
+            alert("@ViewBag.ResultManpulation");
+        }
     </script>
 
 </body>
