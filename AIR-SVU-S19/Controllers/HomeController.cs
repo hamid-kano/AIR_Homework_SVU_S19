@@ -15,7 +15,7 @@ namespace AIR_SVU_S19.Controllers
 {
     public class HomeController : Controller
     {
-        public static string resultText="";
+        public static string resultText="SVU-S19-AIR";
         AIR_SVU_S19_Model db = new AIR_SVU_S19_Model();
         public static Dictionary<string, List<string>> documentCollection = new Dictionary<string, List<string>>();
         public static Dictionary<string, List<int>> termDocumentIncidenceMatrix = new Dictionary<string, List<int>>();
@@ -24,6 +24,7 @@ namespace AIR_SVU_S19.Controllers
         public ActionResult Index()
         {
             ViewBag.ResultManpulation = resultText;
+            resultText = "SVU-S19-AIR";
             return View();
         }
 
