@@ -42,67 +42,61 @@ namespace AIR_SVU_S19.Controllers
         }
         public ActionResult ResultSearch(string AlgorithmRetrieve, string TxT_Search_Key,int? i )
         {
-            ISRI_Stemmer_Arabic stemmerArabic = new ISRI_Stemmer_Arabic();
-            Porter_Stemmer_English StemmerEnglish = new Porter_Stemmer_English();
-            string _TextQuery = TxT_Search_Key.ToLower();
-            _TextQuery = ReturnCleanASCII(_TextQuery);
-            _TextQuery = Stopword_Arabic.RemoveStopwords(_TextQuery);
-            _TextQuery = Stopword_English.RemoveStopwords(_TextQuery);
-            string StemmingTextQuery = "";
-            if (Regex.Matches(_TextQuery, "[a-zA-Z]{2,}").Count >0)
+            List<Files> FilesOrderToRank = new List<Files>();
+            List<int> rank = new List<int>();
+            try
             {
-                foreach (var word in _TextQuery.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
+                ISRI_Stemmer_Arabic stemmerArabic = new ISRI_Stemmer_Arabic();
+                Porter_Stemmer_English StemmerEnglish = new Porter_Stemmer_English();
+                string _TextQuery = TxT_Search_Key.ToLower();
+                _TextQuery = ReturnCleanASCII(_TextQuery);
+                _TextQuery = Stopword_Arabic.RemoveStopwords(_TextQuery);
+                _TextQuery = Stopword_English.RemoveStopwords(_TextQuery);
+                string StemmingTextQuery = "";
+                if (Regex.Matches(_TextQuery, "[a-zA-Z]{2,}").Count > 0)
                 {
-                    StemmingTextQuery += StemmerEnglish.stem(word) + " ";
-                }
-            }
-            else
-            {
-                foreach (var word in _TextQuery.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    StemmingTextQuery += stemmerArabic.Stemming(word) + " ";
-                }
-            }
-                
-            List<Files> fileR = new List<Files>();
-            Dictionary<string, double> resutlFR;
-            if (AlgorithmRetrieve == "vector_space")
-            {
-                resutlFR = VectorSpace_Model(StemmingTextQuery);
-                var sortedDict = from file in resutlFR orderby file.Value descending select file;
-                foreach (var item in sortedDict)
-                {
-                    if (item.Value>0)
+                    foreach (var word in _TextQuery.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        fileR.Add(db.Files.Find(Convert.ToInt16(item.Key)));
+                        StemmingTextQuery += StemmerEnglish.stem(word) + " ";
                     }
                 }
-            }
-            else if (AlgorithmRetrieve == "ex_boolean")
-            {
-                fileR = Extended_Boolean_Model(StemmingTextQuery);
-            }
-            else
-            {
-                fileR= Boolean_Model(StemmingTextQuery);
-            }
-            Dictionary<int, int> Rank = new Dictionary<int, int>();
-            // heigh light queryText  and Compute Ranks to Files
-            List<string> TermBoolean = new List<string>() {"and","or","not","أو","او","و","دون" };
-            foreach (var item in fileR)
-            {
-                int RankFiles = 0;
-                foreach (var word in TxT_Search_Key.ToLower().Split(charsSplit,StringSplitOptions.RemoveEmptyEntries))
+                else
                 {
-                    if (!TermBoolean.Contains(word)) 
+                    foreach (var word in _TextQuery.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        RankFiles += Regex.Matches(item.File_content.ToLower(), word).Count;
-                        item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
+                        StemmingTextQuery += stemmerArabic.Stemming(word) + " ";
                     }
                 }
-                if (RankFiles==0)
+
+                List<Files> fileR = new List<Files>();
+                Dictionary<string, double> resutlFR;
+                if (AlgorithmRetrieve == "vector_space")
                 {
-                    foreach (var word in StemmingTextQuery.ToLower().Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
+                    resutlFR = VectorSpace_Model(StemmingTextQuery);
+                    var sortedDict = from file in resutlFR orderby file.Value descending select file;
+                    foreach (var item in sortedDict)
+                    {
+                        if (item.Value > 0)
+                        {
+                            fileR.Add(db.Files.Find(Convert.ToInt16(item.Key)));
+                        }
+                    }
+                }
+                else if (AlgorithmRetrieve == "ex_boolean")
+                {
+                    fileR = Extended_Boolean_Model(StemmingTextQuery);
+                }
+                else
+                {
+                    fileR = Boolean_Model(StemmingTextQuery);
+                }
+                Dictionary<int, int> Rank = new Dictionary<int, int>();
+                // heigh light queryText  and Compute Ranks to Files
+                List<string> TermBoolean = new List<string>() { "and", "or", "not", "أو", "او", "و", "دون" };
+                foreach (var item in fileR)
+                {
+                    int RankFiles = 0;
+                    foreach (var word in TxT_Search_Key.ToLower().Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
                     {
                         if (!TermBoolean.Contains(word))
                         {
@@ -110,44 +104,58 @@ namespace AIR_SVU_S19.Controllers
                             item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
                         }
                     }
-                }
-
-                Rank.Add(item.File_ID, RankFiles);
-            }
-            var sortedDict2 = from file in Rank orderby file.Value descending select file;
-            List<Files> FilesOrderToRank = new List<Files>();
-            List<int> rank = new List<int>();
-            int AvarageRank = 0;
-            if (sortedDict2.Count()!=0)
-            {
-                int meanRank = sortedDict2.First().Value;
-                foreach (var item in sortedDict2) // Create List After order
-                {
-
-                    if (item.Value > meanRank - 1)
+                    if (RankFiles == 0)
                     {
-                        AvarageRank = 5;
-                        rank.Add(AvarageRank);
-                        FilesOrderToRank.Add(db.Files.Find(item.Key));
-                    }
-                    else if (meanRank != 0)
-                    {
-                        if (item.Value != 0)
+                        foreach (var word in StemmingTextQuery.ToLower().Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
                         {
-                            AvarageRank = Convert.ToInt32(((double)item.Value / meanRank) * 5);
+                            if (!TermBoolean.Contains(word))
+                            {
+                                RankFiles += Regex.Matches(item.File_content.ToLower(), word).Count;
+                                item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
+                            }
+                        }
+                    }
+
+                    Rank.Add(item.File_ID, RankFiles);
+                }
+                var sortedDict2 = from file in Rank orderby file.Value descending select file;
+                int AvarageRank = 0;
+                if (sortedDict2.Count() != 0)
+                {
+                    int meanRank = sortedDict2.First().Value;
+                    foreach (var item in sortedDict2) // Create List After order
+                    {
+
+                        if (item.Value > meanRank - 1)
+                        {
+                            AvarageRank = 5;
                             rank.Add(AvarageRank);
                             FilesOrderToRank.Add(db.Files.Find(item.Key));
                         }
-                    }
-                    else
-                    {
-                        rank.Add(5);
-                        FilesOrderToRank.Add(db.Files.Find(item.Key));
-                    }
+                        else if (meanRank != 0)
+                        {
+                            if (item.Value != 0)
+                            {
+                                AvarageRank = Convert.ToInt32(((double)item.Value / meanRank) * 5);
+                                rank.Add(AvarageRank);
+                                FilesOrderToRank.Add(db.Files.Find(item.Key));
+                            }
+                        }
+                        else
+                        {
+                            rank.Add(5);
+                            FilesOrderToRank.Add(db.Files.Find(item.Key));
+                        }
 
+
+                    }
 
                 }
+            }
+            catch (Exception)
+            {
 
+                // throw;
             }
             ViewBag.ReturnFileCount = FilesOrderToRank.Count;
             ViewBag.RankList = rank.ToList().ToPagedList(i ?? 1,3);
@@ -180,146 +188,155 @@ namespace AIR_SVU_S19.Controllers
         public ActionResult Mainpulation_Text(FormCollection values)
         {
 
-            if (!(values["userName"] == "admin" &&  values["Password"] == "airs19"))
+            try
             {
-                resultText = "اسم مدير النظام او كلمة المرور غير صحيحة";
-                return RedirectToAction("Index");
-            }
-            #region enter_stemming_term_with_Docs
-            string langSelect = values["Lang"];
-            string AlgorithmSelect = values["Algorithm"];
-            HashSet<string> hashSet = new HashSet<string>();
-            Word.Application app = new Word.Application();
-            Word.Document doc;
-            object missing = Type.Missing;
-            object readOnly = true;
-            string poureText="";
-            IList<Files> Files_List = db.Files.ToList();
-            bool insertNewDoc = false;
-            foreach (var file in Files_List)
-            {
-                if (file.File_content == null)
+                if (!(values["userName"] == "admin" && values["Password"] == "airs19"))
                 {
-                    db.SaveChanges();
-                    insertNewDoc = true;
-                    object path = file.File_Name;// @"C:\Users\حميد عبيد\source\repos\AIR-SVU-S19\AIR-SVU-S19\Files\1.doc";// file;
-                    doc = app.Documents.Open(ref path, ref missing, ref readOnly, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
-                    string text = doc.Content.Text;
-                    Files _file = db.Files.Find(file.File_ID);  //db.Files.Find(file.File_ID);//  .Where(u => u.File_Name.Equals(file)).SingleOrDefault();
-                    _file.File_Name = doc.Name;// file.File_Name;
-                    _file.File_content = text;
-                    db.Entry(_file).State = EntityState.Modified;
-                    db.SaveChanges();
-                    doc.Close();
-                    poureText = ReturnCleanASCII(text);
-                    //MatchCollection mc = Regex.Matches(text,"\\w+ ") ; // Regex.Escape(text);
-                    //foreach (Match mt in mc)
-                    //{
-                    //    poureText +=" "+ mt.ToString();
-                    //}
-                    poureText = Stopword_Arabic.RemoveStopwords(poureText);
-                    poureText = Stopword_English.RemoveStopwords(poureText);
-                    string wordStemm;
-                    hashSet = new HashSet<string>((from a in db.Term_Document select a.Terms).Distinct());
-                    int countTerm = hashSet.Count;
-                    if (langSelect== "arabic")
+                    resultText = "اسم مدير النظام او كلمة المرور غير صحيحة";
+                    return RedirectToAction("Index");
+                }
+                #region enter_stemming_term_with_Docs
+                string langSelect = values["Lang"];
+                string AlgorithmSelect = values["Algorithm"];
+                HashSet<string> hashSet = new HashSet<string>();
+                Word.Application app = new Word.Application();
+                Word.Document doc;
+                object missing = Type.Missing;
+                object readOnly = true;
+                string poureText = "";
+                IList<Files> Files_List = db.Files.ToList();
+                bool insertNewDoc = false;
+                foreach (var file in Files_List)
+                {
+                    if (file.File_content == null)
                     {
-                        ISRI_Stemmer_Arabic stemmerArabic = new ISRI_Stemmer_Arabic();
-                        foreach (var item in poureText.Split(charsSplit,StringSplitOptions.RemoveEmptyEntries))
+                        db.SaveChanges();
+                        insertNewDoc = true;
+                        object path = file.File_Name;// @"C:\Users\حميد عبيد\source\repos\AIR-SVU-S19\AIR-SVU-S19\Files\1.doc";// file;
+                        doc = app.Documents.Open(ref path, ref missing, ref readOnly, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
+                        string text = doc.Content.Text;
+                        Files _file = db.Files.Find(file.File_ID);  //db.Files.Find(file.File_ID);//  .Where(u => u.File_Name.Equals(file)).SingleOrDefault();
+                        _file.File_Name = doc.Name;// file.File_Name;
+                        _file.File_content = text;
+                        db.Entry(_file).State = EntityState.Modified;
+                        db.SaveChanges();
+                        doc.Close();
+                        poureText = ReturnCleanASCII(text);
+                        //MatchCollection mc = Regex.Matches(text,"\\w+ ") ; // Regex.Escape(text);
+                        //foreach (Match mt in mc)
+                        //{
+                        //    poureText +=" "+ mt.ToString();
+                        //}
+                        poureText = Stopword_Arabic.RemoveStopwords(poureText);
+                        poureText = Stopword_English.RemoveStopwords(poureText);
+                        string wordStemm;
+                        hashSet = new HashSet<string>((from a in db.Term_Document select a.Terms).Distinct());
+                        int countTerm = hashSet.Count;
+                        if (langSelect == "arabic")
                         {
-                            Term_Document newTerm = new Term_Document();
-                            wordStemm = stemmerArabic.Stemming(item);
-                            if (wordStemm.Length>2)
-                            hashSet.Add(wordStemm);
-                            if (countTerm<hashSet.Count)
+                            ISRI_Stemmer_Arabic stemmerArabic = new ISRI_Stemmer_Arabic();
+                            foreach (var item in poureText.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
                             {
-                                countTerm++;
-                                newTerm.Terms = wordStemm;
-                                newTerm.Docs = " "+ file.File_Name ;
-                                db.Term_Document.Add(newTerm);
-                                db.SaveChanges();
-                            }
-                            else
-                            {
-                                  newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
-                                  if (newTerm != null)
-                                  {
-                                        newTerm.Docs += " "+ file.File_Name ;
+                                Term_Document newTerm = new Term_Document();
+                                wordStemm = stemmerArabic.Stemming(item);
+                                if (wordStemm.Length > 2)
+                                    hashSet.Add(wordStemm);
+                                if (countTerm < hashSet.Count)
+                                {
+                                    countTerm++;
+                                    newTerm.Terms = wordStemm;
+                                    newTerm.Docs = " " + file.File_Name;
+                                    db.Term_Document.Add(newTerm);
+                                    db.SaveChanges();
+                                }
+                                else
+                                {
+                                    newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm)).FirstOrDefault();
+                                    if (newTerm != null)
+                                    {
+                                        newTerm.Docs += " " + file.File_Name;
                                         db.Entry(newTerm).State = EntityState.Modified;
                                         db.SaveChanges();
-                                  }
+                                    }
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        Porter_Stemmer_English stemmerEnglish = new Porter_Stemmer_English();
-                        foreach (var item in poureText.Split(' '))
+                        else
                         {
-                            Term_Document newTerm = new Term_Document();
-                            wordStemm = stemmerEnglish.stem(item.ToLower());
-                            if (wordStemm.Length > 2)
-                                hashSet.Add(wordStemm);
-                            if (countTerm < hashSet.Count)
+                            Porter_Stemmer_English stemmerEnglish = new Porter_Stemmer_English();
+                            foreach (var item in poureText.Split(' '))
                             {
-                                countTerm++;
-                                newTerm.Terms = wordStemm.ToLower();
-                                newTerm.Docs = " " + file.File_Name ;
-                                db.Term_Document.Add(newTerm);
-                                db.SaveChanges();
-                            }
-                            else
-                            {
-                                newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm.ToLower())).FirstOrDefault();
-                                if (newTerm != null)
+                                Term_Document newTerm = new Term_Document();
+                                wordStemm = stemmerEnglish.stem(item.ToLower());
+                                if (wordStemm.Length > 2)
+                                    hashSet.Add(wordStemm);
+                                if (countTerm < hashSet.Count)
                                 {
-                                        newTerm.Docs += " " + file.File_Name ;
+                                    countTerm++;
+                                    newTerm.Terms = wordStemm.ToLower();
+                                    newTerm.Docs = " " + file.File_Name;
+                                    db.Term_Document.Add(newTerm);
+                                    db.SaveChanges();
+                                }
+                                else
+                                {
+                                    newTerm = db.Term_Document.Where(f => f.Terms.Equals(wordStemm.ToLower())).FirstOrDefault();
+                                    if (newTerm != null)
+                                    {
+                                        newTerm.Docs += " " + file.File_Name;
                                         db.Entry(newTerm).State = EntityState.Modified;
                                         db.SaveChanges();
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                #endregion enter_stemming_term_with_Docs
+                if (insertNewDoc)
+                {
+                    foreach (var item in db.OrderTerms_DocsBoolean)
+                    {
+                        db.OrderTerms_DocsBoolean.Remove(item);
+                    }
+                    db.SaveChanges();
+                    documentCollection = new Dictionary<string, List<string>>();
+                    List<string> listOfDocument = new List<string>();
+                    listOfDocument = db.Files.Select(f => f.File_Name).ToList<string>();
+                    foreach (var file in listOfDocument)
+                    {
+                        List<string> listTermDoc = db.Term_Document.Where(d => d.Docs.Contains(file)).Select(t => t.Terms).ToList<string>();
+                        if (!documentCollection.ContainsKey(file))
+                        {
+                            documentCollection.Add(file, listTermDoc);
+                        }
+                    }
+                    distinctTerm = db.Term_Document.Select(x => x.Terms).Distinct().ToHashSet<string>();
+                    termDocumentIncidenceMatrix = BooleanQueryManipulationClass.GetTermDocumentIncidenceMatrix(distinctTerm, documentCollection);
+                    insert_Distinct_Term_Docs_To_DB(termDocumentIncidenceMatrix);
+                    ////////  Count Freq Term in Docs;
+                    string OrderFreqTerm_in_docs = "";
+                    Files_List = db.Files.ToList();
+                    foreach (var term in db.Term_Document)
+                    {
+                        foreach (var Name_Doc in Files_List)
+                        {
+                            OrderFreqTerm_in_docs += Regex.Matches(term.Docs, " " + Name_Doc.File_Name).Count.ToString() + " ";
+                        }
+                        term.Freg_Term_in_docs = OrderFreqTerm_in_docs;
+                        OrderFreqTerm_in_docs = "";
+                    }
+                    db.SaveChanges();
+                    insertVectorTerm_to_DB(); // for comput Vector Term for All Documents
+                }
+                resultText = "تم فهرسة الملفات بنجاح";
+
             }
-            #endregion enter_stemming_term_with_Docs
-            if (insertNewDoc)
+            catch (Exception)
             {
-                foreach (var item in db.OrderTerms_DocsBoolean)
-                {
-                    db.OrderTerms_DocsBoolean.Remove(item);
-                }
-                db.SaveChanges();
-                documentCollection = new Dictionary<string, List<string>>();
-                List<string> listOfDocument = new List<string>();
-                listOfDocument = db.Files.Select(f => f.File_Name).ToList<string>();
-                foreach (var file in listOfDocument)
-                {
-                    List<string> listTermDoc = db.Term_Document.Where(d => d.Docs.Contains(file)).Select(t => t.Terms).ToList<string>();
-                    if (!documentCollection.ContainsKey(file))
-                    {
-                        documentCollection.Add(file, listTermDoc);
-                    }
-                }
-                distinctTerm = db.Term_Document.Select(x => x.Terms).Distinct().ToHashSet<string>();
-                termDocumentIncidenceMatrix = BooleanQueryManipulationClass.GetTermDocumentIncidenceMatrix(distinctTerm, documentCollection);
-                insert_Distinct_Term_Docs_To_DB(termDocumentIncidenceMatrix);
-                ////////  Count Freq Term in Docs;
-                string OrderFreqTerm_in_docs = "";
-                Files_List = db.Files.ToList();
-                foreach (var term in db.Term_Document)
-                {
-                    foreach (var Name_Doc in Files_List)
-                    {
-                        OrderFreqTerm_in_docs+= Regex.Matches(term.Docs, " "+Name_Doc.File_Name).Count.ToString()+" ";
-                    }
-                    term.Freg_Term_in_docs = OrderFreqTerm_in_docs;
-                    OrderFreqTerm_in_docs = "";
-                }
-                db.SaveChanges();
-                insertVectorTerm_to_DB(); // for comput Vector Term for All Documents
-            }
-            resultText = "تم فهرسة الملفات بنجاح";
+
+              //  throw;
+            }        
             return RedirectToAction("Index");
         }
         public void insert_Distinct_Term_Docs_To_DB(Dictionary<string, List<int>> termDocumentIncidenceMatrix)
@@ -363,9 +380,9 @@ namespace AIR_SVU_S19.Controllers
                 db.Entry(distinctTerm).State = EntityState.Modified;
                 db.SaveChanges();
                 //test write to file
-                test += TermID + " == " + tempVectorTerm+Environment.NewLine;
+                //test += TermID + " == " + tempVectorTerm+Environment.NewLine;
             }
-              System.IO.File.WriteAllText(@"D:\testVector.txt", test);
+              //System.IO.File.WriteAllText(@"D:\testVector.txt", test);
         }
         public Dictionary<string, double> VectorSpace_Model(string QueryText)
         {
