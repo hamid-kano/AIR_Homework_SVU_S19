@@ -84,7 +84,7 @@
     <!-- Header section end  -->
     <div id="page-container" style="background:#ffffff;padding-top:25px;height:1000px;background-color:#2196f3">
         <br />
-        <h1 style="font-family:Al-Jazeera-Arabic;font-size:40px ;text-align:center;text-decoration-line:underline;">اعداد الطلاب</h1>
+        <h1 style="font-family:Al-Jazeera-Arabic;font-size:40px ;font-weight:500;text-align:center;text-decoration-line:underline;">اعداد الطلاب</h1>
         <br />
         <div class="row  justify-content-center">
             <div class="col-md-2">
@@ -215,23 +215,25 @@
     <script src="~/js/owl.carousel.min.js"></script>
     <script>
         document.getElementById('uploader').onclick = function () {
-            var formdata = new FormData(); //FormData object
-            var fileInput = document.getElementById('fileInput');
-            //Iterating through each files selected in fileInput
-            for (i = 0; i < fileInput.files.length; i++) {
-                //Appending each file to FormData object
-                formdata.append(fileInput.files[i].name, fileInput.files[i]);
-            }
-            //Creating an XMLHttpRequest and sending
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/Home/Upload');
-            xhr.send(formdata);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    alert(xhr.responseText);
-                }
-            }
-            return false;
+            //var formdata = new FormData(); //FormData object
+            //var fileInput = document.getElementById('fileInput');
+            ////Iterating through each files selected in fileInput
+            //for (i = 0; i < fileInput.files.length; i++) {
+            //    //Appending each file to FormData object
+            //    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+            //}
+            ////Creating an XMLHttpRequest and sending
+            //var xhr = new XMLHttpRequest();
+            //xhr.open('POST', '/Home/Upload');
+            //xhr.send(formdata);
+            //xhr.onreadystatechange = function () {
+            //    if (xhr.readyState == 4 && xhr.status == 200) {
+            //        alert(xhr.responseText);
+            //    }
+            //}
+            //return false;
+
+             alert("رفع الملفات موقف حاليا بسبب الحجم المخصص في الاستضافة وتجنبا لسلامة قاعدة البيانات");
         }
     </script>
 

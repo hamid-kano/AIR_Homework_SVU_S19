@@ -2091,4 +2091,8 @@
      padding: 13px 10px;
    }
  }
+@font-face {
+    font-family: 'Al-Jazeera-Arabic';
+    src: url('../fonts/Al-Jazeera-Arabic.ttf') format('truetype');
+}
  

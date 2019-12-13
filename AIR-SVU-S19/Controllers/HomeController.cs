@@ -104,17 +104,17 @@ namespace AIR_SVU_S19.Controllers
                             item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
                         }
                     }
-                    if (RankFiles == 0)
-                    {
-                        foreach (var word in StemmingTextQuery.ToLower().Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
-                        {
-                            if (!TermBoolean.Contains(word))
-                            {
-                                RankFiles += Regex.Matches(item.File_content.ToLower(), word).Count;
-                                item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
-                            }
-                        }
-                    }
+                    //if (RankFiles == 0)
+                    //{
+                    //    foreach (var word in StemmingTextQuery.ToLower().Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
+                    //    {
+                    //        if (!TermBoolean.Contains(word))
+                    //        {
+                    //            RankFiles += Regex.Matches(item.File_content.ToLower(), word).Count;
+                    //            item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
+                    //        }
+                    //    }
+                    //}
 
                     Rank.Add(item.File_ID, RankFiles);
                 }
@@ -155,7 +155,7 @@ namespace AIR_SVU_S19.Controllers
             catch (Exception)
             {
 
-                // throw;
+               // throw;
             }
             ViewBag.ReturnFileCount = FilesOrderToRank.Count;
             ViewBag.RankList = rank.ToList().ToPagedList(i ?? 1,3);
@@ -172,7 +172,6 @@ namespace AIR_SVU_S19.Controllers
                 string mimeType = file.ContentType;
                 System.IO.Stream fileContent = file.InputStream;
                 //To save file, use SaveAs method
-                if (db.Files.Where(f=>f.File_Name.Equals(fileName)).FirstOrDefault()==null)
                 {
                 file.SaveAs(Server.MapPath("~/Files/") + fileName); //File will be saved in application root
                 Files _file = new Files();
@@ -187,7 +186,8 @@ namespace AIR_SVU_S19.Controllers
         [HttpPost]
         public ActionResult Mainpulation_Text(FormCollection values)
         {
-
+            ISRI_Stemmer_Arabic stemmerArabic = new ISRI_Stemmer_Arabic();
+            Porter_Stemmer_English stemmerEnglish = new Porter_Stemmer_English();
             try
             {
                 if (!(values["userName"] == "admin" && values["Password"] == "airs19"))
@@ -234,11 +234,11 @@ namespace AIR_SVU_S19.Controllers
                         int countTerm = hashSet.Count;
                         if (langSelect == "arabic")
                         {
-                            ISRI_Stemmer_Arabic stemmerArabic = new ISRI_Stemmer_Arabic();
                             foreach (var item in poureText.Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
                             {
                                 Term_Document newTerm = new Term_Document();
                                 wordStemm = stemmerArabic.Stemming(item);
+                                wordStemm = stemmerEnglish.stem(wordStemm.ToLower());
                                 if (wordStemm.Length > 2)
                                     hashSet.Add(wordStemm);
                                 if (countTerm < hashSet.Count)
@@ -263,11 +263,11 @@ namespace AIR_SVU_S19.Controllers
                         }
                         else
                         {
-                            Porter_Stemmer_English stemmerEnglish = new Porter_Stemmer_English();
                             foreach (var item in poureText.Split(' '))
                             {
                                 Term_Document newTerm = new Term_Document();
                                 wordStemm = stemmerEnglish.stem(item.ToLower());
+                                wordStemm = stemmerArabic.Stemming(wordStemm);
                                 if (wordStemm.Length > 2)
                                     hashSet.Add(wordStemm);
                                 if (countTerm < hashSet.Count)
@@ -305,7 +305,7 @@ namespace AIR_SVU_S19.Controllers
                     listOfDocument = db.Files.Select(f => f.File_Name).ToList<string>();
                     foreach (var file in listOfDocument)
                     {
-                        List<string> listTermDoc = db.Term_Document.Where(d => d.Docs.Contains(file)).Select(t => t.Terms).ToList<string>();
+                        List<string> listTermDoc = db.Term_Document.Where(d => d.Docs.Contains(" "+file)).Select(t => t.Terms).ToList<string>();
                         if (!documentCollection.ContainsKey(file))
                         {
                             documentCollection.Add(file, listTermDoc);
@@ -335,7 +335,7 @@ namespace AIR_SVU_S19.Controllers
             catch (Exception)
             {
 
-              //  throw;
+             // throw;
             }        
             return RedirectToAction("Index");
         }
@@ -363,7 +363,6 @@ namespace AIR_SVU_S19.Controllers
             Dictionary<int, double[]> dictionary = new Dictionary<int, double[]>();
             string tempVectorTerm = "";
             int TermID = 0;
-            string test = "";
             string[] TempVector;
             double[] TempVectorDo;
             dictionary = VectorSpaceModel.createVector_For_Docs(db.Term_Document.ToList(),db.OrderTerms_DocsBoolean.ToList());
