@@ -1,0 +1,2 @@
+What is the license agreement on the contents of Wikipedia?
+Wikipedia articles are all free content and their text is covered by the Creative Commons Attribution-Sharealike 3.0 Unported License (CC-BY-SA) and in most cases the GNU Free Documentation License (GFDL). See Wikipedia:Copyrights.

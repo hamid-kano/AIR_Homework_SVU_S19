@@ -1,0 +1,4 @@
+How do I cite a Wikipedia article in a paper?
+    Cite it as you would any other web page in accordance with the normal citation practice the publication you are submitting the paper to follows. Citing the individual authors is not necessary, but you should at least include the date on which you retrieved the article (and ideally the full timestamp from the history).
+
+    Wikipedia has a tool to generate citations for particular articles. For the cite tool, see Special:Cite, or follow the "Cite this page" link in the toolbox on the left of the page in the article you wish to cite.

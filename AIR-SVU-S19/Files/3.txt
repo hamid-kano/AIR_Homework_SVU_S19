@@ -1,0 +1,2 @@
+Why was my article deleted?
+If you look at the address where your page was, it should have a red box above it that shows the user who deleted it (in the form "Username (talk|contribs)") and their reason (which appears in italics). If the reason is not helpful, or you disagree with it, you can click on the "talk" link to send them a message and ask.

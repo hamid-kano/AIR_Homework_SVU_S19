@@ -1,0 +1,2 @@
+If I link a word from my site to Wikipedia, am I required to use the GNU FDL for my site?
+No. Linking is not an act regulated by copyright, so the CC-BY-SA and GNU FDL does not apply.

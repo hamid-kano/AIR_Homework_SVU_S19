@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using Word = Microsoft.Office.Interop.Word;
 using PagedList.Mvc;
 using PagedList;
+using System.IO;
 
 namespace AIR_SVU_S19.Controllers
 {
@@ -98,10 +99,13 @@ namespace AIR_SVU_S19.Controllers
                     int RankFiles = 0;
                     foreach (var word in TxT_Search_Key.ToLower().Split(charsSplit, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        if (!TermBoolean.Contains(word))
+                        if (word.Length>2)
                         {
-                            RankFiles += Regex.Matches(item.File_content.ToLower(), word).Count;
-                            item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
+                            if (!TermBoolean.Contains(word))
+                            {
+                                RankFiles += Regex.Matches(item.File_content.ToLower(), word).Count;
+                                item.File_content = item.File_content.ToLower().Replace(word, "<strong style=" + '"' + "background-color: yellow; color: black;" + '"' + ">" + word + "</strong>");
+                            } 
                         }
                     }
                     //if (RankFiles == 0)
@@ -190,11 +194,11 @@ namespace AIR_SVU_S19.Controllers
             Porter_Stemmer_English stemmerEnglish = new Porter_Stemmer_English();
             try
             {
-                if (!(values["userName"] == "admin" && values["Password"] == "airs19"))
-                {
-                    resultText = "اسم مدير النظام او كلمة المرور غير صحيحة";
-                    return RedirectToAction("Index");
-                }
+                //if (!(values["userName"] == "admin" && values["Password"] == "airs19"))
+                //{
+                //    resultText = "اسم مدير النظام او كلمة المرور غير صحيحة";
+                //    return RedirectToAction("Index");
+                //}
                 #region enter_stemming_term_with_Docs
                 string langSelect = values["Lang"];
                 string AlgorithmSelect = values["Algorithm"];
@@ -213,14 +217,16 @@ namespace AIR_SVU_S19.Controllers
                         db.SaveChanges();
                         insertNewDoc = true;
                         object path = file.File_Name;// @"C:\Users\حميد عبيد\source\repos\AIR-SVU-S19\AIR-SVU-S19\Files\1.doc";// file;
-                        doc = app.Documents.Open(ref path, ref missing, ref readOnly, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
-                        string text = doc.Content.Text;
+                        //doc = app.Documents.Open(ref path, ref missing, ref readOnly, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
+                        //string text = doc.Content.Text;
+                        string text =System.IO.File.ReadAllText(file.File_Name);
                         Files _file = db.Files.Find(file.File_ID);  //db.Files.Find(file.File_ID);//  .Where(u => u.File_Name.Equals(file)).SingleOrDefault();
-                        _file.File_Name = doc.Name;// file.File_Name;
+                        //_file.File_Name = doc.Name;// file.File_Name;
+                        _file.File_Name = Path.GetFileName(file.File_Name);// file.File_Name;
                         _file.File_content = text;
                         db.Entry(_file).State = EntityState.Modified;
                         db.SaveChanges();
-                        doc.Close();
+                        //doc.Close();
                         poureText = ReturnCleanASCII(text);
                         //MatchCollection mc = Regex.Matches(text,"\\w+ ") ; // Regex.Escape(text);
                         //foreach (Match mt in mc)

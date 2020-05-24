@@ -1,0 +1,2 @@
+How do I change my username/delete my account?
+An account cannot be deleted. If an account was deleted, all the edits made by the user could not be properly attributed. You can, however, change your username, and request that your userpage be deleted by adding the code {{db-user}} to the top of the page. See also Wikipedia:Courtesy vanishing.

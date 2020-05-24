@@ -1,0 +1,2 @@
+Can I get Wikipedia on CD, or download it for offline use?
+    The entire text of the English Wikipedia (as of January 2012) can be downloaded in the OpenZIM format, which can be read using the free Kiwix software, available for Mac, Windows, Linux, and Sugar.
