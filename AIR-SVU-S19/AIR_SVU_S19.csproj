@@ -198,6 +198,10 @@
     <Compile Include="Migrations\201911261937122_vectorTerm.designer.cs">
       <DependentUpon>201911261937122_vectorTerm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005270858381_lengthDocs.cs" />
+    <Compile Include="Migrations\202005270858381_lengthDocs.designer.cs">
+      <DependentUpon>202005270858381_lengthDocs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Files.cs" />
     <Compile Include="Models\OrderTerms_DocsBoolean.cs" />
@@ -333,6 +337,7 @@
     <Content Include="Views\Term_Document\Edit.cshtml" />
     <Content Include="Views\Term_Document\Index.cshtml" />
     <Content Include="Views\Home\ResultSearch.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -387,6 +392,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911261937122_vectorTerm.resx">
       <DependentUpon>201911261937122_vectorTerm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005270858381_lengthDocs.resx">
+      <DependentUpon>202005270858381_lengthDocs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

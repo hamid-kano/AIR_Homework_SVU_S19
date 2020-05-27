@@ -455,3 +455,4 @@ C:\Users\Hamid\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\bin\Newtonsoft.Json
 C:\Users\Hamid\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\bin\Antlr3.Runtime.pdb
 C:\Users\Hamid\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 C:\Users\Hamid\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR_SVU_S19.csproj.CopyComplete
+C:\Users\Hamid\Source\Repos\AIR_Homework_SVU_S19\AIR-SVU-S19\obj\Debug\AIR_SVU_S19.Migrations.lengthDocs.resources
